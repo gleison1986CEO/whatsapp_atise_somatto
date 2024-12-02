@@ -270,7 +270,7 @@ const ScheduleModal = ({ open, onClose, scheduleId, contactId, cleanContact, rel
 									>
 										<Autocomplete											
 											fullWidth
-											style={{display: "none"}}
+											
 											value={currentContact}
 											options={contacts}
 											onChange={(e, contact) => {
@@ -300,7 +300,7 @@ const ScheduleModal = ({ open, onClose, scheduleId, contactId, cleanContact, rel
 										variant="outlined"
 										margin="dense"
 										fullWidth
-										style={{display: "none"}}
+										
 									/>
 								</div>
 								<br />
@@ -313,7 +313,7 @@ const ScheduleModal = ({ open, onClose, scheduleId, contactId, cleanContact, rel
 										variant="outlined"
 										margin="dense"
 										fullWidth
-										style={{display: "none"}}
+										
 									/>
 								</div>
 								<br />
@@ -328,7 +328,7 @@ const ScheduleModal = ({ open, onClose, scheduleId, contactId, cleanContact, rel
 								<div className={classes.multFieldLine}>
 									{(schedule.mediaPath || attachment) && (
 										<Grid xs={12} item>
-											<Button style={{display: "none"}} startIcon={<AttachFileIcon />}>
+											<Button  startIcon={<AttachFileIcon />}>
 												{attachment ? attachment.name : schedule.mediaName}
 											</Button>
 											<IconButton
@@ -341,7 +341,7 @@ const ScheduleModal = ({ open, onClose, scheduleId, contactId, cleanContact, rel
 									)}
 									{!attachment && !schedule.mediaPath && (
 										<Button
-										style={{display: "none"}}
+										
 											color="primary"
 											onClick={() => attachmentFile.current.click()}
 											disabled={isSubmitting}
@@ -350,11 +350,6 @@ const ScheduleModal = ({ open, onClose, scheduleId, contactId, cleanContact, rel
 											{i18n.t("announcements.dialog.buttons.attach")}
 										</Button>
 									)}
-								</div>
-								<div style={{padding:"14px"}}>  
-								status: "{capitalize(schedule.status)}"<br />
-								*Escolha a data/hora que deseja emcaminhar esta mensagem ao destinatário!* 
-								
 								</div>
 								<br />
 								<div className={classes.multFieldLine}>
@@ -389,8 +384,8 @@ const ScheduleModal = ({ open, onClose, scheduleId, contactId, cleanContact, rel
 										style={{ backgroundColor: "green", color:"#ffffff",width:"100%", maxWidth:"300px", margin: "0 auto" }}
 									>
 										{scheduleId
-											? `ENCAMINHAR MENSAGEM`
-											: `ENCAMINHAR MENSAGEM`}
+											? `REENCAMINHAR MENSAGEM`
+											: `REENCAMINHAR MENSAGEM`}
 										{isSubmitting && (
 											<CircularProgress
 												size={24}
@@ -402,9 +397,6 @@ const ScheduleModal = ({ open, onClose, scheduleId, contactId, cleanContact, rel
 								)}
 					
 								
-							</DialogActions>
-							<DialogActions>
-							    <a style={{ backgroundColor: "red", color:"#ffffff",width:"100%", padding:"13px",textDecoration:"none", fontWeight:"bold", maxWidth:"300px", margin: "0 auto", marginTop:"10px", borderRadius:"12px" }} href="kanban_services">VOLTAR</a>
 							</DialogActions>
 						</Form>
 					

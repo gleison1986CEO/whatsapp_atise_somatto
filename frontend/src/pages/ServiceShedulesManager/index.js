@@ -7,7 +7,8 @@ import React, {
 } from "react";
 import { toast } from "react-toastify";
 
-import { useLocation, useHistory } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
+
 import { makeStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
 import Button from "@material-ui/core/Button";
@@ -16,7 +17,6 @@ import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
-
 import IconButton from "@material-ui/core/IconButton";
 import SearchIcon from "@material-ui/icons/Search";
 import TextField from "@material-ui/core/TextField";
@@ -33,7 +33,7 @@ import Title from "../../components/Title";
 import api from "../../services/api";
 import { i18n } from "../../translate/i18n";
 import TableRowSkeleton from "../../components/TableRowSkeleton";
-import ServiceScheduleModal from "../../components/ServiceSheduleModal";
+import ServiceSheduleManagerModal from "../../components/ServiceSheduleManagerModal";
 import ConfirmationModal from "../../components/ConfirmationModal";
 import toastError from "../../errors/toastError";
 import moment from "moment";
@@ -100,9 +100,8 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ServiceShedules = () => {
+const ServiceShedulesManager = () => {
   const classes = useStyles();
-  const history = useHistory();
 
   const { user } = useContext(AuthContext);
 
@@ -234,12 +233,6 @@ const ServiceShedules = () => {
     return str;
   };
 
-  const location = useLocation();  
-
-  if(location.state.id != null) {
-    scheduleModalOpen = true;
-    selectedSchedule = location.state.id;
-  }
 
   return (
     <MainContainer>
@@ -254,7 +247,7 @@ const ServiceShedules = () => {
       >
         {i18n.t("schedules.confirmationModal.deleteMessage")}
       </ConfirmationModal>
-      <ServiceScheduleModal
+      <ServiceSheduleManagerModal
         open={scheduleModalOpen}
         onClose={handleCloseScheduleModal}
         reload={fetchSchedules}
@@ -265,8 +258,7 @@ const ServiceShedules = () => {
         setUpdateLocation={setUpdateLocation}
       />
       <MainHeader>
-        <Title>LISTA DE TICKETS PROGRAMADOS</Title>
-        
+        <Title>LISTA DE SERVIÇOS AGENDADOS</Title>
         <MainHeaderButtonsWrapper>
           <TextField
             placeholder={i18n.t("contacts.searchPlaceholder")}
@@ -281,13 +273,6 @@ const ServiceShedules = () => {
               ),
             }}
           />
-          <Button
-              variant="contained"
-              color="primary"
-              onClick={()=> history.push("/service_schedules_manager")}
-            >
-              GERENCIAR MENSAGENS
-            </Button>
           {/* <Button
             variant="contained"
             color="primary"
@@ -306,21 +291,41 @@ const ServiceShedules = () => {
         <Table size="small">
           <TableHead>
             <TableRow>
-
+              
               <TableCell align="center">
-                SERVIÇO ENVIADO PARA:
+                {i18n.t("schedules.table.status")}
               </TableCell>
 
               <TableCell align="center">
-                DESCRIÇÃO:
+                {i18n.t("schedules.table.sendAt")}
               </TableCell>
 
+              <TableCell align="center">
+                {i18n.t("schedules.table.contact")}
+              </TableCell>
+
+              <TableCell align="center">
+                {i18n.t("schedules.table.body")}
+              </TableCell>
+
+
+              <TableCell align="center">
+                {i18n.t("schedules.table.actions")}
+              </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             <>
               {schedules.map((schedule) => (
                 <TableRow key={schedule.id}>
+                 
+                  <TableCell align="center">
+                    {capitalize(schedule.status)}
+                  </TableCell>
+                  
+                  <TableCell align="center">
+                    {moment(schedule.sendAt).format("DD/MM/YYYY HH:mm:ss")}
+                  </TableCell>
                   
                   <TableCell align="center">
                     {schedule.contact.name}
@@ -330,6 +335,7 @@ const ServiceShedules = () => {
                     {truncate(schedule.body, 25)}
                   </TableCell>
                   
+        
                   <TableCell align="center">
                     
                     {/* <IconButton
@@ -337,7 +343,7 @@ const ServiceShedules = () => {
                       onClick={() => handleEditSchedule(schedule)}
                     >
                       <EditIcon />
-                    </IconButton>
+                    </IconButton> */}
 
                     <IconButton
                       size="small"
@@ -347,7 +353,7 @@ const ServiceShedules = () => {
                       }}
                     >
                       <DeleteOutlineIcon />
-                    </IconButton> */}
+                    </IconButton>
                   </TableCell>
                 </TableRow>
               ))}
@@ -360,4 +366,4 @@ const ServiceShedules = () => {
   );
 };
 
-export default ServiceShedules;
+export default ServiceShedulesManager;

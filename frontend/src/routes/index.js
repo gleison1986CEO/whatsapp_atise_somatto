@@ -26,6 +26,7 @@ import { WhatsAppsProvider } from "../context/WhatsApp/WhatsAppsContext";
 import Route from "./Route";
 import Schedules from "../pages/Schedules";
 import ServiceShedules from "../pages/ServiceShedules";
+import ServiceShedulesManager from "../pages/ServiceShedulesManager";
 import Campaigns from "../pages/Campaigns";
 import CampaignsConfig from "../pages/CampaignsConfig";
 import CampaignReport from "../pages/CampaignReport";
@@ -85,6 +86,12 @@ const Routes = () => {
                   exact
                   path="/service_schedules"
                   component={ServiceShedules}
+                  isPrivate
+                />
+                <Route
+                  exact
+                  path="/service_schedules_manager"
+                  component={ServiceShedulesManager}
                   isPrivate
                 />
                 <Route exact path="/tags" component={Tags} isPrivate />

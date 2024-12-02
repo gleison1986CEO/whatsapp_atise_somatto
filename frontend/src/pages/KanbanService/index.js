@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useReducer, useContext, useCallback } from "react";
+import React, { useState, useEffect, useReducer, useContext, useCallback} from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import api from "../../services/api";
 import { AuthContext } from "../../context/Auth/AuthContext";
@@ -164,7 +164,7 @@ const KanbanService = () => {
     const lanes = [
       {
         id: "lane0",
-        title: "TIKETS DE AGENDAMENTO",
+        title: "AGENDAMENTO DE SERVIÇOS",
         cards: filteredTickets.map(ticket => ({
           title: "",
           id: ticket.id.toString(),
@@ -283,11 +283,20 @@ const KanbanService = () => {
         <MainHeader>
           <MainHeaderButtonsWrapper>
             <Button
+              style={{marginRight:"7px"}}
               variant="contained"
               color="primary"
               onClick={handleOpenScheduleModal}
             >
-              ADICIONAR NOVO
+              NOVO SERVIÇO
+            </Button>
+            
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={()=> history.push("/service_schedules_manager")}
+            >
+              GERENCIAR SERVIÇOS AGENDADOS
             </Button>
           </MainHeaderButtonsWrapper>
         </MainHeader>
