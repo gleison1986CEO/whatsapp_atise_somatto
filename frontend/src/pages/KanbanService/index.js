@@ -164,7 +164,7 @@ const KanbanService = () => {
     const lanes = [
       {
         id: "lane0",
-        title: "MAPEAMENTO",
+        title: "TIKETS DE AGENDAMENTO",
         cards: filteredTickets.map(ticket => ({
           title: "",
           id: ticket.id.toString(),
@@ -173,6 +173,7 @@ const KanbanService = () => {
             <div>
               <p>
                 TEXTO: {ticket.body}
+                <br />
                 <br />
                 LINK: {ticket.link}
               </p>

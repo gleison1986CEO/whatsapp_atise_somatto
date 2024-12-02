@@ -293,21 +293,26 @@ const ServiceShedules = () => {
         variant="outlined"
         onScroll={handleScroll}
       >
+        
         <Table size="small">
           <TableHead>
             <TableRow>
               <TableCell align="center">
+                {i18n.t("schedules.table.sendAt")}
+              </TableCell>
+
+              <TableCell align="center">
                 {i18n.t("schedules.table.contact")}
               </TableCell>
+
               <TableCell align="center">
                 {i18n.t("schedules.table.body")}
               </TableCell>
-              <TableCell align="center">
-                {i18n.t("schedules.table.sendAt")}
-              </TableCell>
+
               <TableCell align="center">
                 {i18n.t("schedules.table.status")}
               </TableCell>
+              
               <TableCell align="center">
                 {i18n.t("schedules.table.actions")}
               </TableCell>
@@ -317,17 +322,24 @@ const ServiceShedules = () => {
             <>
               {schedules.map((schedule) => (
                 <TableRow key={schedule.id}>
-                  <TableCell align="center">{schedule.contact.name}</TableCell>
-                  <TableCell align="center" title={schedule.body}>
-                    {truncate(schedule.body, 25)}
-                  </TableCell>
+
                   <TableCell align="center">
                     {moment(schedule.sendAt).format("DD/MM/YYYY HH:mm:ss")}
                   </TableCell>
+                  
+                  <TableCell align="center">
+                    {schedule.contact.name}
+                  </TableCell>
+
+                  <TableCell align="center" title={schedule.body}>
+                    {truncate(schedule.body, 25)}
+                  </TableCell>
+                  
                   <TableCell align="center">
                     {capitalize(schedule.status)}
                   </TableCell>
                   <TableCell align="center">
+
                     {/* <IconButton
                       size="small"
                       onClick={() => handleEditSchedule(schedule)}

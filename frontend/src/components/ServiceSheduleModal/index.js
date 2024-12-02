@@ -246,10 +246,9 @@ const ScheduleModal = ({ open, onClose, scheduleId, contactId, cleanContact, rel
 				scroll="paper"
 			>
 				<DialogTitle id="form-dialog-title">
-					{schedule.status === 'ERRO' ? 'Erro no envio' : `Encaminhamento de mensagens`}
+					<center>{schedule.status === 'ERRO' ? 'Erro no envio' : `Encaminhamento de mensagens`}</center>
 				</DialogTitle>
-				status: ${capitalize(schedule.status)}, 
-				*Escolha a data/hora que deseja emcainhar esta mensagem ao destinatário!*
+				
 				<Formik
 					initialValues={schedule}
 					enableReinitialize={true}
@@ -352,6 +351,11 @@ const ScheduleModal = ({ open, onClose, scheduleId, contactId, cleanContact, rel
 										</Button>
 									)}
 								</div>
+								<div style={{padding:"14px"}}>  
+								status: "{capitalize(schedule.status)}"<br />
+								*Escolha a data/hora que deseja emcaminhar esta mensagem ao destinatário!* 
+								
+								</div>
 								<br />
 								<div className={classes.multFieldLine}>
 								</div>
@@ -373,14 +377,8 @@ const ScheduleModal = ({ open, onClose, scheduleId, contactId, cleanContact, rel
 								</div>
 							</DialogContent>
 							<DialogActions>
-								{/* <Button
-									onClick={handleClose}
-									color="secondary"
-									disabled={isSubmitting}
-									variant="outlined"
-								>
-									VOLTAR
-								</Button> */}
+				
+
 								{(schedule.sentAt === null || schedule.sentAt === "") && (
 									<Button
 										type="submit"
@@ -388,6 +386,7 @@ const ScheduleModal = ({ open, onClose, scheduleId, contactId, cleanContact, rel
 										disabled={isSubmitting}
 										variant="contained"
 										className={classes.btnWrapper}
+										style={{ backgroundColor: "green", color:"#ffffff",width:"100%", maxWidth:"300px", margin: "0 auto" }}
 									>
 										{scheduleId
 											? `ENCAMINHAR MENSAGEM`
@@ -398,10 +397,17 @@ const ScheduleModal = ({ open, onClose, scheduleId, contactId, cleanContact, rel
 												className={classes.buttonProgress}
 											/>
 										)}
-									</Button>
+									 </Button>
+									 
 								)}
+								<br />
+								<a style={{ backgroundColor: "red", color:"#ffffff",width:"100%", maxWidth:"300px", margin: "0 auto" }} href="kanban_services">VOLTAR</a>
+								
 							</DialogActions>
 						</Form>
+					
+						
+							
 					)}
 				</Formik>
 			</Dialog>
