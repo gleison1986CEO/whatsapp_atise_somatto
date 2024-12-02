@@ -261,11 +261,7 @@ const MainListItems = (props, { collapsed }) => {
         primary={i18n.t("Kanban")}
         icon={<TableChartIcon />}
       />
-      <ListItemLink
-        to="/kanban_services"
-        primary={i18n.t("Kanban de Serviços")}
-        icon={<TableChartIcon />}
-      />
+
 
       <ListItemLink
         to="/quick-messages"
@@ -284,12 +280,16 @@ const MainListItems = (props, { collapsed }) => {
         primary={i18n.t("mainDrawer.listItems.schedules")}
         icon={<EventIcon />}
       />
-
       <ListItemLink
+        to="/kanban_services"
+        primary={i18n.t("Kanban de Serviços")}
+        icon={<EventAvailable />}
+      />
+      {/* <ListItemLink
         to="/service_schedules"
         primary={i18n.t("mainDrawer.listItems.service_schedules")}
         icon={<EventAvailable />}
-      />
+      /> */}
 
       <ListItemLink
         to="/tags"

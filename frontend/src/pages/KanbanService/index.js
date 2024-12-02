@@ -169,18 +169,18 @@ const KanbanService = () => {
           title: "",
           id: ticket.id.toString(),
           description: (
+            
             <div>
               <p>
-                menssagem: {ticket.body}
+                TEXTO: {ticket.body}
                 <br />
+                LINK: {ticket.link}
               </p>
-              <p>
-                link: {ticket.link}
-                <br />
-              </p>
-              <button className={classes.button2} style={{ marginRight: '10px' }} onClick={() => handleCardEditClick(ticket.id)}>Atualizar</button>
-              <button className={classes.button3} style={{ marginRight: '10px' }} onClick={() => handleCardClick(ticket.id)}>Deletar</button>
-              <button className={classes.button3} style={{ backgroundColor: "green" }} onClick={() => handleCardClickSend(ticket.id)}>Salvar</button>
+              
+              <center><button className={classes.button3} style={{ backgroundColor: "green", width:"100%", maxWidth:"300px", margin: "0 auto" }} onClick={() => handleCardClickSend(ticket.id)}>Encaminhar Serviço</button></center>
+              <center><button className={classes.button2} style={{ marginRight: '10px' , width:"100%", maxWidth:"300px", margin: "0 auto", marginTop:"10px" }} onClick={() => handleCardEditClick(ticket.id)}>Atualizar Serviço</button></center>
+              <center><button className={classes.button3} style={{ marginRight: '10px' , width:"100%", maxWidth:"300px", margin: "0 auto",marginTop:"10px" }} onClick={() => handleCardClick(ticket.id)}>Deletar Serviço</button></center>
+              
             </div>
           )
         })),
@@ -208,7 +208,7 @@ const KanbanService = () => {
       // Envia os dados para criar um novo service_schedule
       const sendData = await api.post("/service_schedules", data);
 
-      toast.success("Mensagem enviada com sucesso");
+      toast.success("Serviço anexado com sucesso!");
 
       // Redireciona o usuário para a página do kanban
     history.push({pathname:'/service_schedules', 

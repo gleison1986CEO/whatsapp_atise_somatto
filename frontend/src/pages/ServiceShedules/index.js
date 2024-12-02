@@ -328,12 +328,12 @@ const ServiceShedules = () => {
                     {capitalize(schedule.status)}
                   </TableCell>
                   <TableCell align="center">
-                    <IconButton
+                    {/* <IconButton
                       size="small"
                       onClick={() => handleEditSchedule(schedule)}
                     >
                       <EditIcon />
-                    </IconButton>
+                    </IconButton> */}
 
                     <IconButton
                       size="small"

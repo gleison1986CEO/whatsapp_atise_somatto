@@ -135,6 +135,7 @@ const ScheduleModal = ({ open, onClose, scheduleId, contactId, cleanContact, rel
 	}, [scheduleId, contactId, open, user]);
 
 	const handleClose = () => {
+		
 		setAttachment(null);
 		onClose();
 		setSchedule(initialState);
@@ -245,8 +246,10 @@ const ScheduleModal = ({ open, onClose, scheduleId, contactId, cleanContact, rel
 				scroll="paper"
 			>
 				<DialogTitle id="form-dialog-title">
-					{schedule.status === 'ERRO' ? 'Erro de Envio' : `Mensagem ${capitalize(schedule.status)}`}
+					{schedule.status === 'ERRO' ? 'Erro no envio' : `Encaminhamento de mensagens`}
 				</DialogTitle>
+				status: ${capitalize(schedule.status)}, 
+				*Escolha a data/hora que deseja emcainhar esta mensagem ao destinatário!*
 				<Formik
 					initialValues={schedule}
 					enableReinitialize={true}
@@ -370,14 +373,14 @@ const ScheduleModal = ({ open, onClose, scheduleId, contactId, cleanContact, rel
 								</div>
 							</DialogContent>
 							<DialogActions>
-								<Button
+								{/* <Button
 									onClick={handleClose}
 									color="secondary"
 									disabled={isSubmitting}
 									variant="outlined"
 								>
-									{i18n.t("scheduleModal.buttons.cancel")}
-								</Button>
+									VOLTAR
+								</Button> */}
 								{(schedule.sentAt === null || schedule.sentAt === "") && (
 									<Button
 										type="submit"
@@ -387,8 +390,8 @@ const ScheduleModal = ({ open, onClose, scheduleId, contactId, cleanContact, rel
 										className={classes.btnWrapper}
 									>
 										{scheduleId
-											? `${i18n.t("scheduleModal.buttons.okEdit")}`
-											: `${i18n.t("scheduleModal.buttons.okAdd")}`}
+											? `ENCAMINHAR MENSAGEM`
+											: `ENCAMINHAR MENSAGEM`}
 										{isSubmitting && (
 											<CircularProgress
 												size={24}
