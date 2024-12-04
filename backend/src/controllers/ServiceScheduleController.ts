@@ -8,7 +8,7 @@ import ListService from "../services/ServiceScheduleServices/ListService";
 import UpdateService from "../services/ServiceScheduleServices/UpdateService";
 import ShowService from "../services/ServiceScheduleServices/ShowService";
 import DeleteService from "../services/ServiceScheduleServices/DeleteService";
-import {head} from "lodash";
+import { head } from "lodash";
 import ScheduleService from "../models/ScheduleService";
 import path from "path";
 import fs from "fs";
@@ -42,7 +42,9 @@ export const store = async (req: Request, res: Response): Promise<Response> => {
     sendAt,
     contactId,
     userId,
-    link
+    link,
+    mediaPath,
+    mediaName,
   } = req.body;
   const { companyId } = req.user;
 
@@ -52,7 +54,9 @@ export const store = async (req: Request, res: Response): Promise<Response> => {
     contactId,
     companyId,
     userId,
-    link
+    link,
+    mediaPath,
+    mediaName
   });
 
   const io = getIO();
@@ -180,7 +184,7 @@ export const validate = async (req: Request, res: Response): Promise<Response> =
   const { createAt } = req.body;
   const { id } = req.user;
 
-  const schedule = await ValidateService({createAt, userId: id});
+  const schedule = await ValidateService({ createAt, userId: id });
 
   return res.status(200).json(schedule);
 };
