@@ -298,7 +298,7 @@ const KambamServiceModal = ({ open, onClose, scheduleId, contactId, cleanContact
 											// 	return value.id === option.id
 											// }}
 											renderInput={(params) => <TextField {...params} variant="outlined"
-												placeholder="Nome do Ticket" />}
+												placeholder="Nome da Coluna" />}
 										/>
 									</FormControl>
 								</div>

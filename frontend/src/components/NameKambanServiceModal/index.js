@@ -181,7 +181,7 @@ const NameKambanServiceModal = ({ open, onClose, scheduleId, contactId, cleanCon
 				scroll="paper"
 			>
 				<DialogTitle id="form-dialog-title">
-					Ajuste de Nome
+					NOME DA COLUNA
 				</DialogTitle>
 				<Formik
 					initialValues={schedule}

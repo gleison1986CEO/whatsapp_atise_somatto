@@ -53,6 +53,7 @@ class TicketScheduleService extends Model<TicketScheduleService> {
   @Column
   status: string;
 
+  @ForeignKey(() => FilterNameTicket)
   @Column
   filterId: number;
 

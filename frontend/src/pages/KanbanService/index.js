@@ -163,6 +163,7 @@ const KanbanService = () => {
   const popularCards = () => {
     const filteredTickets = tickets;
 
+
     const lanes = [
       {
         id: "lane0",
