@@ -16,6 +16,7 @@ interface ScheduleData {
   link?: string;
   mediaPath?: string;
   mediaName?: string;
+  filterId?: string;
 }
 
 interface Request {
@@ -48,7 +49,8 @@ const UpdateUserService = async ({
     userId,
     link,
     mediaPath,
-    mediaName
+    mediaName,
+    filterId
   } = scheduleData;
 
   try {
@@ -66,7 +68,8 @@ const UpdateUserService = async ({
     userId,
     link,
     mediaPath,
-    mediaName
+    mediaName,
+    filterId
   });
 
   await schedule.reload();

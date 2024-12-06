@@ -58,6 +58,9 @@ scheduleRoutes.get("/ticket_service_schedules", isAuth, TicketServiceScheduleCon
 
 scheduleRoutes.post("/ticket_service_schedules", isAuth, TicketServiceScheduleController.store);
 
+scheduleRoutes.post("/ticket_service_schedules_ticket", isAuth, TicketServiceScheduleController.storeTicket);
+scheduleRoutes.get("/ticket_service_schedules_ticket", isAuth, TicketServiceScheduleController.getTickets);
+
 scheduleRoutes.put("/ticket_service_schedules/:scheduleId", isAuth, TicketServiceScheduleController.update);
 
 scheduleRoutes.get("/ticket_service_schedules/:scheduleId", isAuth, TicketServiceScheduleController.show);

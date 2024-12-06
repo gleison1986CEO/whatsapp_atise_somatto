@@ -20,6 +20,7 @@ import QueueOption from "../models/QueueOption";
 import Schedule from "../models/Schedule";
 import ScheduleService from "../models/ScheduleService";
 import TicketScheduleService from "../models/TicketScheduleService";
+import FilterNameTicket from "../models/FilterNameTicket";
 import Tag from "../models/Tag";
 import TicketTag from "../models/TicketTag";
 import ContactList from "../models/ContactList";
@@ -79,7 +80,8 @@ const models = [
   Subscriptions,
   BaileysChats,
   ScheduleService,
-  TicketScheduleService
+  TicketScheduleService,
+  FilterNameTicket
 ];
 
 sequelize.addModels(models);

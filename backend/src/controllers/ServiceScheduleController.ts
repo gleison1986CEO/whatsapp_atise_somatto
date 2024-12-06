@@ -44,8 +44,9 @@ export const store = async (req: Request, res: Response): Promise<Response> => {
     userId,
     link,
     mediaPath,
-    mediaName,
+    mediaName
   } = req.body;
+
   const { companyId } = req.user;
 
   const schedule = await CreateService({

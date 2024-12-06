@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useReducer, useContext, useCallback} from "react";
+import React, { useState, useEffect, useReducer, useContext, useCallback } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import api from "../../services/api";
 import { AuthContext } from "../../context/Auth/AuthContext";
@@ -12,7 +12,7 @@ import MainContainer from "../../components/MainContainer";
 import MainHeader from "../../components/MainHeader";
 import MainHeaderButtonsWrapper from "../../components/MainHeaderButtonsWrapper";
 import KambamServiceModal from "../../components/KambanServiceModal";
-import toastError from "../../errors/toastError";
+import NameKambanServiceModal from "../../components/NameKambanServiceModal";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -108,6 +108,7 @@ const KanbanService = () => {
   const [isInitialLoadComplete, setIsInitialLoadComplete] = useState(false);
   const [selectedSchedule, setSelectedSchedule] = useState(null);
   const [scheduleModalOpen, setScheduleModalOpen] = useState(false);
+  const [scheduleNameModalOpen, setScheduleNameModalOpen] = useState(false);
   const [searchParam, setSearchParam] = useState("");
   const [pageNumber, setPageNumber] = useState(1);
   const [schedules, dispatch] = useReducer(reducer, []);
@@ -161,15 +162,16 @@ const KanbanService = () => {
 
   const popularCards = () => {
     const filteredTickets = tickets;
+
     const lanes = [
       {
         id: "lane0",
-        title: "AGENDAMENTO DE SERVIÇOS",
+        title: "SERVIÇO A",
         cards: filteredTickets.map(ticket => ({
           title: "",
           id: ticket.id.toString(),
           description: (
-            
+
             <div>
               <p>
                 TEXTO: {ticket.body}
@@ -177,11 +179,11 @@ const KanbanService = () => {
                 <br />
                 LINK: {ticket.link}
               </p>
-              
-              <center><button className={classes.button3} style={{ backgroundColor: "green", width:"100%", maxWidth:"300px", margin: "0 auto" }} onClick={() => handleCardClickSend(ticket.id)}>Encaminhar Serviço</button></center>
-              <center><button className={classes.button2} style={{ marginRight: '10px' , width:"100%", maxWidth:"300px", margin: "0 auto", marginTop:"10px" }} onClick={() => handleCardEditClick(ticket.id)}>Atualizar Serviço</button></center>
-              <center><button className={classes.button3} style={{ marginRight: '10px' , width:"100%", maxWidth:"300px", margin: "0 auto",marginTop:"10px" }} onClick={() => handleCardClick(ticket.id)}>Deletar Serviço</button></center>
-              
+
+              <center><button className={classes.button3} style={{ backgroundColor: "green", width: "100%", maxWidth: "300px", margin: "0 auto" }} onClick={() => handleCardClickSend(ticket.id)}>Encaminhar Serviço</button></center>
+              <center><button className={classes.button2} style={{ marginRight: '10px', width: "100%", maxWidth: "300px", margin: "0 auto", marginTop: "10px" }} onClick={() => handleCardEditClick(ticket.id)}>Atualizar Serviço</button></center>
+              <center><button className={classes.button3} style={{ marginRight: '10px', width: "100%", maxWidth: "300px", margin: "0 auto", marginTop: "10px" }} onClick={() => handleCardClick(ticket.id)}>Deletar Serviço</button></center>
+
             </div>
           )
         })),
@@ -212,11 +214,12 @@ const KanbanService = () => {
       toast.success("Serviço anexado com sucesso!");
 
       // Redireciona o usuário para a página do kanban
-    history.push({pathname:'/service_schedules', 
-      state: {  // location state
-        id: sendData.data.id 
-      }
-    });
+      history.push({
+        pathname: '/service_schedules',
+        state: {  // location state
+          id: sendData.data.id
+        }
+      });
 
     } catch (error) {
       console.error('Erro ao processar a solicitação:', error);
@@ -256,26 +259,20 @@ const KanbanService = () => {
     setScheduleModalOpen(true);
   };
 
+  const handleOpenScheduleNameModal = () => {
+    setSelectedSchedule(null);
+    setScheduleNameModalOpen(true);
+  };
+
   const handleCloseScheduleModal = () => {
     setSelectedSchedule(null);
     setScheduleModalOpen(false);
   };
 
-  const fetchSchedules = useCallback(async () => {
-    try {
-      const { data } = await api.get("/ticket_service_schedules/", {
-        params: {
-          queueIds: JSON.stringify(jsonString),
-          teste: true
-        }
-      });
-      dispatch({ type: "LOAD_SCHEDULES", payload: data.schedules });
-      setHasMore(data.hasMore);
-      setLoading(false);
-    } catch (err) {
-      toastError(err);
-    }
-  }, [searchParam, pageNumber]);
+  const handleCloseScheduleNameModal = () => {
+    setSelectedSchedule(null);
+    setScheduleNameModalOpen(false);
+  };
 
   return (
     <div className={classes.root}>
@@ -283,18 +280,26 @@ const KanbanService = () => {
         <MainHeader>
           <MainHeaderButtonsWrapper>
             <Button
-              style={{marginRight:"7px"}}
+              style={{ marginRight: "7px" }}
               variant="contained"
               color="primary"
               onClick={handleOpenScheduleModal}
             >
               NOVO SERVIÇO
             </Button>
-            
+            <Button
+              style={{ marginRight: "7px" }}
+              variant="contained"
+              color="primary"
+              onClick={handleOpenScheduleNameModal}
+            >
+              NOVO NOME
+            </Button>
+
             <Button
               variant="contained"
               color="primary"
-              onClick={()=> history.push("/service_schedules_manager")}
+              onClick={() => history.push("/service_schedules_manager")}
             >
               GERENCIAR SERVIÇOS AGENDADOS
             </Button>
@@ -303,6 +308,15 @@ const KanbanService = () => {
         <KambamServiceModal
           open={scheduleModalOpen}
           onClose={handleCloseScheduleModal}
+          reload={fetchTickets}
+          aria-labelledby="form-dialog-title"
+          scheduleId={selectedSchedule}
+          // contactId={contactId}
+          cleanContact={cleanContact}
+        />
+        <NameKambanServiceModal
+          open={scheduleNameModalOpen}
+          onClose={handleCloseScheduleNameModal}
           reload={fetchTickets}
           aria-labelledby="form-dialog-title"
           scheduleId={selectedSchedule}

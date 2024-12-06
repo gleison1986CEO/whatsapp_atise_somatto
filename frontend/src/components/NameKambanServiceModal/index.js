@@ -69,7 +69,7 @@ const ScheduleSchema = Yup.object().shape({
 	sendAt: Yup.string().required("Obrigatório")
 });
 
-const KambamServiceModal = ({ open, onClose, scheduleId, contactId, cleanContact, reload }) => {
+const NameKambanServiceModal = ({ open, onClose, scheduleId, contactId, cleanContact, reload }) => {
 	const classes = useStyles();
 	const history = useHistory();
 	const { user } = useContext(AuthContext);
@@ -86,16 +86,10 @@ const KambamServiceModal = ({ open, onClose, scheduleId, contactId, cleanContact
 		name: ""
 	}
 
-	const initialFilter = {
-		id: "",
-		name: ""
-	}
-
 	const [confirmationOpen, setConfirmationOpen] = useState(false);
 	const [schedule, setSchedule] = useState(initialState);
 	const [currentContact, setCurrentContact] = useState(initialContact);
 	const [contacts, setContacts] = useState([initialContact]);
-	const [filterName, setFilterName] = useState([initialFilter]);
 	const [attachment, setAttachment] = useState(null);
 	const attachmentFile = useRef(null);
 
@@ -124,16 +118,12 @@ const KambamServiceModal = ({ open, onClose, scheduleId, contactId, cleanContact
 						});
 					}
 
-					const { data: filterList } = await api.get('/ticket_service_schedules_ticket');
-
-					let customFilter = filterList.rows.map((c) => ({ id: c.id, name: c.filterName }));
-					if (isArray(customFilter)) {
-						setFilterName([{ id: "", name: "" }, ...customFilter]);
-					}
-
 					if (!scheduleId) return;
 
 					const { data } = await api.get(`/ticket_service_schedules/${scheduleId}`);
+
+					console.log("DATACONTACT", data);
+
 
 					setSchedule(prevState => {
 						return { ...prevState, ...data, sendAt: moment(data.sendAt).format('YYYY-MM-DDTHH:mm') };
@@ -162,38 +152,16 @@ const KambamServiceModal = ({ open, onClose, scheduleId, contactId, cleanContact
 	const handleSaveSchedule = async values => {
 		const scheduleData = { ...values, userId: user.id };
 
-		console.log("SCHEDULEDD", scheduleData);
-
-
 		try {
-			if (scheduleId) {
-				await api.put(`/ticket_service_schedules/${scheduleId}`, scheduleData);
-				if (attachment != null) {
-					const formData = new FormData();
-					formData.append("file", attachment);
-					await api.post(
-						`/ticket_service_schedules/${scheduleId}/media-upload`,
-						formData
-					);
-				}
-			} else {
 
-				const { data } = await api.post("/ticket_service_schedules", scheduleData);
-				if (attachment != null) {
-					const formData = new FormData();
-					formData.append("file", attachment);
-					await api.post(`/ticket_service_schedules/${data.id}/media-upload`, formData);
-				}
+			if (scheduleData.link == "") {
+				return;
 			}
+
+			await api.post(`/ticket_service_schedules_ticket`, { filterName: scheduleData.link });
 			toast.success(i18n.t("scheduleModal.success"));
 			if (typeof reload == 'function') {
 				reload();
-			}
-			if (contactId) {
-				if (typeof cleanContact === 'function') {
-					cleanContact();
-					history.push('/ticket_service_schedules');
-				}
 			}
 		} catch (err) {
 			toastError(err);
@@ -203,35 +171,8 @@ const KambamServiceModal = ({ open, onClose, scheduleId, contactId, cleanContact
 		handleClose();
 	};
 
-	const deleteMedia = async () => {
-		if (attachment) {
-			setAttachment(null);
-			attachmentFile.current.value = null;
-		}
-
-		if (schedule.mediaPath) {
-			await api.delete(`/ticket_service_schedules/${schedule.id}/media-upload`);
-			setSchedule((prev) => ({
-				...prev,
-				mediaPath: null,
-			}));
-			toast.success(i18n.t("announcements.toasts.deleted"));
-			if (typeof reload == "function") {
-				reload();
-			}
-		}
-	};
-
 	return (
 		<div className={classes.root}>
-			<ConfirmationModal
-				title={i18n.t("announcements.confirmationModal.deleteTitle")}
-				open={confirmationOpen}
-				onClose={() => setConfirmationOpen(false)}
-				onConfirm={deleteMedia}
-			>
-				{i18n.t("announcements.confirmationModal.deleteMessage")}
-			</ConfirmationModal>
 			<Dialog
 				open={open}
 				onClose={handleClose}
@@ -240,12 +181,12 @@ const KambamServiceModal = ({ open, onClose, scheduleId, contactId, cleanContact
 				scroll="paper"
 			>
 				<DialogTitle id="form-dialog-title">
-					{schedule.status === 'ERRO' ? 'Erro de Envio' : `Mensagem ${capitalize(schedule.status)}`}
+					Ajuste de Nome
 				</DialogTitle>
 				<Formik
 					initialValues={schedule}
 					enableReinitialize={true}
-					validationSchema={ScheduleSchema}
+					// validationSchema={ScheduleSchema}
 					onSubmit={(values, actions) => {
 						setTimeout(() => {
 							handleSaveSchedule(values);
@@ -256,72 +197,11 @@ const KambamServiceModal = ({ open, onClose, scheduleId, contactId, cleanContact
 					{({ touched, errors, isSubmitting, values, setFieldValue }) => (
 						<Form>
 							<DialogContent dividers>
-								<div className={classes.multFieldLine}>
-									<FormControl
-										variant="outlined"
-										fullWidth
-									>
-										<Autocomplete
-											fullWidth
-											value={currentContact}
-											options={contacts}
-											onChange={(e, contact) => {
-												const contactId = contact ? contact.id : '';
-												setSchedule({ ...schedule, contactId });
-												setCurrentContact(contact ? contact : initialContact);
-											}}
-											getOptionLabel={(option) => option.name}
-											// getOptionSelected={(option, value) => {
-											// 	return value.id === option.id
-											// }}
-											renderInput={(params) => <TextField {...params} variant="outlined"
-												placeholder="Contato" />}
-										/>
-									</FormControl>
-								</div>
-								<br />
-								<div className={classes.multFieldLine}>
-									<FormControl
-										variant="outlined"
-										fullWidth
-									>
-										<Autocomplete
-											fullWidth
-											// value={currentFilter}
-											options={filterName}
-											onChange={(e, filter) => {
-												const filterId = filter ? filter.id : '';
-												setSchedule({ ...schedule, filterId });
-											}}
-											getOptionLabel={(option) => option.name}
-											// getOptionSelected={(option, value) => {
-											// 	return value.id === option.id
-											// }}
-											renderInput={(params) => <TextField {...params} variant="outlined"
-												placeholder="Nome do Ticket" />}
-										/>
-									</FormControl>
-								</div>
 								<br />
 								<div className={classes.multFieldLine}>
 									<Field
 										as={TextField}
-										rows={9}
-										multiline={true}
-										label={i18n.t("scheduleModal.form.body")}
-										name="body"
-										error={touched.body && Boolean(errors.body)}
-										helperText={touched.body && errors.body}
-										variant="outlined"
-										margin="dense"
-										fullWidth
-									/>
-								</div>
-								<br />
-								<div className={classes.multFieldLine}>
-									<Field
-										as={TextField}
-										label={i18n.t("scheduleModal.form.link")}
+										label={"Nome Preenchido"}
 										type="text"
 										name="link"
 										variant="outlined"
@@ -330,49 +210,12 @@ const KambamServiceModal = ({ open, onClose, scheduleId, contactId, cleanContact
 									/>
 								</div>
 								<br />
-								<div style={{ display: "none" }}>
-									<input
-										type="file"
-										accept=".png,.jpg,.jpeg,.mp4"
-										ref={attachmentFile}
-										onChange={(e) => handleAttachmentFile(e)}
-									/>
-								</div>
-								<div className={classes.multFieldLine}>
-									{(schedule.mediaPath || attachment) && (
-										<Grid xs={12} item>
-											<Button startIcon={<AttachFileIcon />}>
-												{attachment ? attachment.name : schedule.mediaName}
-											</Button>
-											<IconButton
-												onClick={() => setConfirmationOpen(true)}
-												color="secondary"
-											>
-												<DeleteOutlineIcon />
-											</IconButton>
-										</Grid>
-									)}
-									{!attachment && !schedule.mediaPath && (
-										<Button
-											color="primary"
-											onClick={() => attachmentFile.current.click()}
-											disabled={isSubmitting}
-											variant="outlined"
-										>
-											{i18n.t("announcements.dialog.buttons.attach")}
-										</Button>
-									)}
-								</div>
-								<br />
-								<div className={classes.multFieldLine}>
-								</div>
-								<br />
 							</DialogContent>
 							<DialogActions>
 								<Button
 									onClick={handleClose}
 									color="secondary"
-									disabled={isSubmitting}
+									// disabled={isSubmitting}
 									variant="outlined"
 								>
 									{i18n.t("scheduleModal.buttons.cancel")}
@@ -381,7 +224,7 @@ const KambamServiceModal = ({ open, onClose, scheduleId, contactId, cleanContact
 									<Button
 										type="submit"
 										color="primary"
-										disabled={isSubmitting}
+										// disabled={isSubmitting}
 										variant="contained"
 										className={classes.btnWrapper}
 									>
@@ -401,8 +244,8 @@ const KambamServiceModal = ({ open, onClose, scheduleId, contactId, cleanContact
 					)}
 				</Formik>
 			</Dialog>
-		</div >
+		</div>
 	);
 };
 
-export default KambamServiceModal;
+export default NameKambanServiceModal;

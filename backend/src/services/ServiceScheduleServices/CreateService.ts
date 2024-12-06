@@ -12,6 +12,7 @@ interface Request {
   link?: string;
   mediaPath?: string;
   mediaName?: string;
+  filterId?: string;
 }
 
 const CreateService = async ({

@@ -11,6 +11,7 @@ import {
   ForeignKey
 } from "sequelize-typescript";
 import Contact from "./Contact";
+import FilterNameTicket from "./FilterNameTicket";
 @Table
 class TicketScheduleService extends Model<TicketScheduleService> {
   @PrimaryKey
@@ -51,6 +52,9 @@ class TicketScheduleService extends Model<TicketScheduleService> {
 
   @Column
   status: string;
+
+  @Column
+  filterId: number;
 
   @CreatedAt
   createdAt: Date;

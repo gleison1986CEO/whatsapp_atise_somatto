@@ -59,6 +59,9 @@ class ScheduleService extends Model<ScheduleService> {
   @Column(DataType.STRING)
   status: string;
 
+  @Column(DataType.STRING)
+  filterId: string;
+
   @CreatedAt
   createdAt: Date;
 

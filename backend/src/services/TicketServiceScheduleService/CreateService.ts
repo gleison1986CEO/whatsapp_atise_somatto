@@ -12,6 +12,7 @@ interface Request {
   link?: string;
   mediaPath?: string;
   mediaName?: string;
+  filterId?: string;
 }
 
 const CreateService = async ({
@@ -22,7 +23,8 @@ const CreateService = async ({
   userId,
   link,
   mediaPath,
-  mediaName
+  mediaName,
+  filterId
 }: Request): Promise<TicketScheduleService> => {
   const schema = Yup.object().shape({
     body: Yup.string().required().min(5),
@@ -45,7 +47,8 @@ const CreateService = async ({
       link,
       mediaPath,
       mediaName,
-      status: 'PENDENTE'
+      status: 'PENDENTE',
+      filterId
     }
   );
 

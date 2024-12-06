@@ -3,6 +3,9 @@ import { getIO } from "../libs/socket";
 
 import AppError from "../errors/AppError";
 
+// import CreateSer
+
+import CreateFilterNameTicketService from "../services/TicketServiceScheduleService/CreateFilterNameTicketService";
 import CreateService from "../services/TicketServiceScheduleService/CreateService";
 import ListService from "../services/TicketServiceScheduleService/ListService";
 import UpdateService from "../services/TicketServiceScheduleService/UpdateService";
@@ -12,6 +15,7 @@ import DeleteService from "../services/TicketServiceScheduleService/DeleteServic
 import { head } from "lodash";
 
 import ScheduleService from "../models/TicketScheduleService";
+import ListFilterTickets from "../services/TicketServiceScheduleService/ListFilterTickets";
 
 import path from "path";
 import fs from "fs";
@@ -37,13 +41,33 @@ export const index = async (req: Request, res: Response): Promise<Response> => {
   return res.json({ schedules, count, hasMore });
 };
 
+export const storeTicket = async (req: Request, res: Response): Promise<Response> => {
+  const {
+    filterName
+  } = req.body;
+
+  const schedule = await CreateFilterNameTicketService({
+    filterName
+  });
+
+  return res.status(200).json(schedule);
+};
+
+export const getTickets = async (req: Request, res: Response): Promise<Response> => {
+
+  const schedule = await ListFilterTickets();
+
+  return res.status(200).json(schedule);
+};
+
 export const store = async (req: Request, res: Response): Promise<Response> => {
   const {
     body,
     sendAt,
     contactId = "null",
     userId,
-    link
+    link,
+    filterId
   } = req.body;
   const { companyId } = req.user;
 
@@ -53,7 +77,8 @@ export const store = async (req: Request, res: Response): Promise<Response> => {
     contactId,
     companyId,
     userId,
-    link
+    link,
+    filterId
   });
 
   const io = getIO();
