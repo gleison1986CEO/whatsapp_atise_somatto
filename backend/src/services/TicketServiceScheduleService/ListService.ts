@@ -1,7 +1,8 @@
-import { Op, Sequelize } from "sequelize";
+import { Op, Sequelize, Includeable } from "sequelize";
 import Contact from "../../models/Contact";
 import TicketScheduleService from "../../models/TicketScheduleService";
 import User from "../../models/User";
+import FilterNameTicket from "../../models/FilterNameTicket";
 
 interface Request {
   searchParam?: string;
@@ -24,9 +25,18 @@ const ListService = async ({
   pageNumber = "1",
   companyId
 }: Request): Promise<Response> => {
+  let includeCondition: Includeable[];
   let whereCondition = {};
   const limit = 20;
   const offset = limit * (+pageNumber - 1);
+
+  includeCondition = [
+    {
+      model: FilterNameTicket,
+      as: "filterNameTicket",
+      attributes: ["id", "filterName"]
+    }
+  ]
 
   if (searchParam) {
     whereCondition = {
@@ -55,6 +65,7 @@ const ListService = async ({
 
   const { count, rows: schedules } = await TicketScheduleService.findAndCountAll({
     where: whereCondition,
+    include: includeCondition,
     limit,
     offset,
     order: [["createdAt", "DESC"]]

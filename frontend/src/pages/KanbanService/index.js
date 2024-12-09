@@ -109,9 +109,6 @@ const KanbanService = () => {
   const [selectedSchedule, setSelectedSchedule] = useState(null);
   const [scheduleModalOpen, setScheduleModalOpen] = useState(false);
   const [scheduleNameModalOpen, setScheduleNameModalOpen] = useState(false);
-  const [searchParam, setSearchParam] = useState("");
-  const [pageNumber, setPageNumber] = useState(1);
-  const [schedules, dispatch] = useReducer(reducer, []);
   const fetchTags = async () => {
     try {
       const response = await api.get("/tags/kanban");
@@ -145,14 +142,9 @@ const KanbanService = () => {
 
   const fetchTickets = async (jsonString) => {
     try {
-      const { data } = await api.get("/ticket_service_schedules", {
-        params: {
-          queueIds: JSON.stringify(jsonString),
-          teste: true
-        }
-      });
-      // console.log(data.schedules);
-      setTickets(data.schedules);
+      const getTickets = await api.get("/ticket_service_schedules_ticket");
+      setTickets(getTickets.data.rows);
+      // setTickets(data.schedules);
     } catch (err) {
       console.log(err);
       setTickets([]);
@@ -163,12 +155,38 @@ const KanbanService = () => {
   const popularCards = () => {
     const filteredTickets = tickets;
 
+    // {
+    //   id: "lane0",
+    //     title: "SERVIÇO A",
+    //       cards: filteredTickets.map(ticket => ({
+    //         title: "",
+    //         id: ticket.id.toString(),
+    //         description: (
 
-    const lanes = [
-      {
-        id: "lane0",
-        title: "SERVIÇO A",
-        cards: filteredTickets.map(ticket => ({
+    //           <div>
+    //             <p>
+    //               TEXTO: {ticket.body}
+    //               <br />
+    //               <br />
+    //               LINK: {ticket.link}
+    //             </p>
+
+    //             <center><button className={classes.button3} style={{ backgroundColor: "green", width: "100%", maxWidth: "300px", margin: "0 auto" }} onClick={() => handleCardClickSend(ticket.id)}>Encaminhar Serviço</button></center>
+    //             <center><button className={classes.button2} style={{ marginRight: '10px', width: "100%", maxWidth: "300px", margin: "0 auto", marginTop: "10px" }} onClick={() => handleCardEditClick(ticket.id)}>Atualizar Serviço</button></center>
+    //             <center><button className={classes.button3} style={{ marginRight: '10px', width: "100%", maxWidth: "300px", margin: "0 auto", marginTop: "10px" }} onClick={() => handleCardClick(ticket.id)}>Deletar Serviço</button></center>
+
+    //           </div>
+    //         )
+    //       })),
+    //   }
+
+    const lanes = filteredTickets.map((filtered) => {
+      console.log(filtered);
+
+      return {
+        id: filtered.id,
+        title: filtered.filterName,
+        cards: filtered.ticketScheduleService.map(ticket => ({
           title: "",
           id: ticket.id.toString(),
           description: (
@@ -188,8 +206,9 @@ const KanbanService = () => {
             </div>
           )
         })),
-      }
-    ];
+      };
+    });
+
 
     setFile({ lanes });
   };
@@ -294,7 +313,7 @@ const KanbanService = () => {
               color="primary"
               onClick={handleOpenScheduleNameModal}
             >
-              NOVO NOME
+              NOVA COLUNA
             </Button>
 
             <Button

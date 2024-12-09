@@ -57,6 +57,9 @@ class TicketScheduleService extends Model<TicketScheduleService> {
   @Column
   filterId: number;
 
+  @BelongsTo(() => FilterNameTicket)
+  filterNameTicket: FilterNameTicket;
+
   @CreatedAt
   createdAt: Date;
 

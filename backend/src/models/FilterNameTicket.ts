@@ -5,8 +5,10 @@ import {
   PrimaryKey,
   AutoIncrement,
   CreatedAt,
-  UpdatedAt
+  UpdatedAt,
+  HasMany
 } from "sequelize-typescript";
+import TicketScheduleService from "./TicketScheduleService";
 @Table
 class FilterNameTicket extends Model<FilterNameTicket> {
 
@@ -23,6 +25,14 @@ class FilterNameTicket extends Model<FilterNameTicket> {
 
   @UpdatedAt
   updatedAt: Date;
+
+  @HasMany(() => TicketScheduleService, {
+    onUpdate: "CASCADE",
+    onDelete: "CASCADE",
+    hooks: true
+  })
+  ticketScheduleService: TicketScheduleService[];
+
 }
 
 export default FilterNameTicket;
