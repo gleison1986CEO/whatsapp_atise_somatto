@@ -265,9 +265,18 @@ const KanbanService = () => {
 
   const handleCardMove = async (cardId, sourceLaneId, targetLaneId) => {
     try {
-      await api.delete(`/ticket-tags/${targetLaneId}`);
-      await api.put(`/ticket-tags/${targetLaneId}/${sourceLaneId}`);
-      toast.success('Etiqueta do ticket adicionada com Sucesso!');
+
+      console.log("cardId", cardId);
+      console.log("Source", sourceLaneId);
+      console.log("target", targetLaneId);
+
+
+      let { data } = await api.get(`/ticket_service_schedules/${targetLaneId}`);
+
+      data.filterId = sourceLaneId
+
+      await api.put(`/ticket_service_schedules/${targetLaneId}`, data);
+      toast.success('Etiqueta do ticket modificada com Sucesso!');
 
     } catch (err) {
       console.log(err);

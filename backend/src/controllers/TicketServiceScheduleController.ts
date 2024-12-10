@@ -110,8 +110,9 @@ export const update = async (
   const { scheduleId } = req.params;
   const scheduleData = req.body;
   const { companyId } = req.user;
+  const { filterId } = req.body;
 
-  const schedule = await UpdateService({ scheduleData, id: scheduleId, companyId });
+  const schedule = await UpdateService({ scheduleData, id: scheduleId, companyId, filterId });
 
   const io = getIO();
   io.emit("schedule", {
