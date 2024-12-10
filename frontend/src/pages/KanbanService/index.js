@@ -266,11 +266,6 @@ const KanbanService = () => {
   const handleCardMove = async (cardId, sourceLaneId, targetLaneId) => {
     try {
 
-      console.log("cardId", cardId);
-      console.log("Source", sourceLaneId);
-      console.log("target", targetLaneId);
-
-
       let { data } = await api.get(`/ticket_service_schedules/${targetLaneId}`);
 
       data.filterId = sourceLaneId
