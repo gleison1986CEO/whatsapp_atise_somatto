@@ -44,6 +44,13 @@ module.exports = {
         onDelete: "CASCADE",
         allowNull: true
       },
+      filterId: {
+        type: DataTypes.INTEGER,
+        references: { model: "FilterNameTickets", key: "id" },
+        onUpdate: "SET NULL",
+        onDelete: "SET NULL",
+        allowNull: true
+      },
       ticketId: {
         type: DataTypes.INTEGER,
         references: { model: "Tickets", key: "id" },
