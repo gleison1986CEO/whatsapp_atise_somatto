@@ -16,3 +16,14 @@ CREATE TABLE public."TicketScheduleServices" (
 	"mediaAudioName" varchar(255) NULL,
 	"mediaAudioPath" varchar(255) NULL
 );
+
+
+ALTER TABLE "TicketScheduleServices"
+ADD filterId int NULL;
+
+CREATE TABLE public."FilterNameTickets" (
+	"filterName" varchar(50) NULL,
+	"createdAt" date NULL,
+	"updatedAt" date NULL,
+	id serial4 NOT NULL
+);
