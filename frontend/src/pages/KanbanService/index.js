@@ -181,8 +181,6 @@ const KanbanService = () => {
     //   }
 
     const lanes = filteredTickets.map((filtered) => {
-      console.log(filtered);
-
       return {
         id: filtered.id,
         title: filtered.filterName,
@@ -225,8 +223,6 @@ const KanbanService = () => {
     try {
       // Obtém os dados do ticket pelo UUID
       const { data } = await api.get(`/ticket_service_schedules/${uuid}`);
-      console.log('Dados recebidos do ticket:', data);
-
       // data.sendAt = "0000-00-00 00:00:00.000";
       // Envia os dados para criar um novo service_schedule
       const sendData = await api.post("/service_schedules", data);
@@ -249,8 +245,6 @@ const KanbanService = () => {
 
 
   const handleCardEditClick = async (uuid) => {
-    console.log("SCHEDULEID", uuid);
-
     setSelectedSchedule(uuid);
     setScheduleModalOpen(true);
     await fetchTickets();
@@ -297,6 +291,13 @@ const KanbanService = () => {
     setSelectedSchedule(null);
     setScheduleNameModalOpen(false);
   };
+
+  const deleteLanes = async (card) => {
+    console.log("DELETED", card);
+
+    await api.delete(`/ticket_service_schedules_ticket/${card}`);
+
+  }
 
   return (
     <div className={classes.root}>
@@ -348,6 +349,10 @@ const KanbanService = () => {
           cleanContact={cleanContact}
         />
         <Board
+          draggable={true}
+          canAddLanes={true}
+          hideCardDeleteIcon={true}
+          onLaneDelete={deleteLanes}
           data={file}
           onCardMoveAcrossLanes={handleCardMove}
           style={{ backgroundColor: 'rgba(252, 252, 252, 0.03)' }}

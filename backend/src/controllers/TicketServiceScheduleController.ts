@@ -19,6 +19,8 @@ import ListFilterTickets from "../services/TicketServiceScheduleService/ListFilt
 
 import path from "path";
 import fs from "fs";
+import DeleteCardService from "../services/TicketServiceScheduleService/DeleteCardService";
+import DeleteTicketService from "../services/TicketServiceScheduleService/DeleteTicketService";
 
 type IndexQuery = {
   searchParam?: string;
@@ -139,6 +141,41 @@ export const remove = async (
   });
 
   return res.status(200).json({ message: "Schedule deleted" });
+};
+
+export const removeTicket = async (
+  req: Request,
+  res: Response
+): Promise<Response> => {
+
+  const { id } = req.params;
+
+  await DeleteTicketService(id);
+
+  const io = getIO();
+  io.emit("schedule", {
+    action: "delete",
+    id
+  });
+
+  return res.status(200).json({ message: "Ticket Schedule deleted" });
+};
+
+export const removeCard = async (
+  req: Request,
+  res: Response
+): Promise<Response> => {
+  const { filterId } = req.params;
+
+  await DeleteCardService(filterId);
+
+  const io = getIO();
+  io.emit("schedule", {
+    action: "delete",
+    filterId
+  });
+
+  return res.status(200).json({ message: "Card Schedule deleted" });
 };
 
 export const mediaUpload = async (

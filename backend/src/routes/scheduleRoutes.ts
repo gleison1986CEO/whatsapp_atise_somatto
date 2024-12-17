@@ -60,12 +60,15 @@ scheduleRoutes.post("/ticket_service_schedules", isAuth, TicketServiceScheduleCo
 
 scheduleRoutes.post("/ticket_service_schedules_ticket", isAuth, TicketServiceScheduleController.storeTicket);
 scheduleRoutes.get("/ticket_service_schedules_ticket", isAuth, TicketServiceScheduleController.getTickets);
+scheduleRoutes.delete("/ticket_service_schedules_ticket/:id", isAuth, TicketServiceScheduleController.removeTicket);
 
 scheduleRoutes.put("/ticket_service_schedules/:scheduleId", isAuth, TicketServiceScheduleController.update);
 
 scheduleRoutes.get("/ticket_service_schedules/:scheduleId", isAuth, TicketServiceScheduleController.show);
 
 scheduleRoutes.delete("/ticket_service_schedules/:scheduleId", isAuth, TicketServiceScheduleController.remove);
+
+scheduleRoutes.delete("/ticket_service_schedules/card/:filterId", isAuth, TicketServiceScheduleController.removeCard);
 
 
 routes.post(
