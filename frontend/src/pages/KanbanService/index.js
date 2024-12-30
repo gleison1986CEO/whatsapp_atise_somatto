@@ -13,6 +13,7 @@ import MainHeader from "../../components/MainHeader";
 import MainHeaderButtonsWrapper from "../../components/MainHeaderButtonsWrapper";
 import KambamServiceModal from "../../components/KambanServiceModal";
 import NameKambanServiceModal from "../../components/NameKambanServiceModal";
+import AllServicesModal from "../../components/AllServicesModal";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -108,6 +109,7 @@ const KanbanService = () => {
   const [isInitialLoadComplete, setIsInitialLoadComplete] = useState(false);
   const [selectedSchedule, setSelectedSchedule] = useState(null);
   const [scheduleModalOpen, setScheduleModalOpen] = useState(false);
+  const [allServicesModalOpen, setAllServicesModalOpen] = useState(false);
   const [scheduleNameModalOpen, setScheduleNameModalOpen] = useState(false);
   const fetchTags = async () => {
     try {
@@ -252,6 +254,11 @@ const KanbanService = () => {
     setScheduleModalOpen(true);
   };
 
+  const handleOpenAllServicesModal = () => {
+    setSelectedSchedule(null);
+    setAllServicesModalOpen(true);
+  };
+
   const handleOpenScheduleNameModal = () => {
     setSelectedSchedule(null);
     setScheduleNameModalOpen(true);
@@ -260,6 +267,11 @@ const KanbanService = () => {
   const handleCloseScheduleModal = () => {
     setSelectedSchedule(null);
     setScheduleModalOpen(false);
+  };
+
+  const handleCloseAllServicesModal = () => {
+    setSelectedSchedule(null);
+    setAllServicesModalOpen(false);
   };
 
   const handleCloseScheduleNameModal = () => {
@@ -291,6 +303,14 @@ const KanbanService = () => {
               style={{ marginRight: "7px" }}
               variant="contained"
               color="primary"
+              onClick={handleOpenAllServicesModal}
+            >
+              CAMPOS DISPONÍVEIS
+            </Button>
+            <Button
+              style={{ marginRight: "7px" }}
+              variant="contained"
+              color="primary"
               onClick={handleOpenScheduleNameModal}
             >
               NOVA COLUNA
@@ -313,6 +333,11 @@ const KanbanService = () => {
           scheduleId={selectedSchedule}
           contactId={contactId}
           cleanContact={cleanContact}
+        />
+        <AllServicesModal
+          open={allServicesModalOpen}
+          onClose={handleCloseAllServicesModal}
+          reload={fetchTickets}
         />
         <NameKambanServiceModal
           open={scheduleNameModalOpen}
