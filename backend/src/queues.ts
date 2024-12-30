@@ -24,6 +24,11 @@ import User from "./models/User";
 import Company from "./models/Company";
 import Plan from "./models/Plan";
 import ScheduleService from "./models/ScheduleService";
+import Ticket from "./models/Ticket";
+import CreateTicketService from "./services/TicketServices/CreateTicketService";
+import FindOrCreateTicketService from "./services/TicketServices/FindOrCreateTicketService";
+import CreateOrUpdateContactService from "./services/ContactServices/CreateOrUpdateContactService";
+import GetProfilePicUrl from "./services/WbotServices/GetProfilePicUrl";
 const nodemailer = require('nodemailer');
 const CronJob = require('cron').CronJob;
 
@@ -267,6 +272,25 @@ async function handleSendServiceScheduledMessage(job) {
       sentAt: moment().format("YYYY-MM-DD HH:mm"),
       status: "ENVIADA"
     });
+
+    logger.info(`Criado o Ticket`);
+
+    const profilePicUrl = await GetProfilePicUrl(
+      phoneNumber,
+      schedule.companyId
+    );
+
+    const contactData = {
+      name: `${phoneNumber}`,
+      number: phoneNumber,
+      profilePicUrl,
+      isGroup: false,
+      companyId: schedule.companyId
+    };
+
+    const contact = await CreateOrUpdateContactService(contactData);
+
+    await FindOrCreateTicketService(contact, whatsapp.id!, 0, schedule.companyId);
 
     logger.info(`Mensagem agendada enviada para: ${schedule.contact?.name}`);
     sendScheduledMessages.clean(15000, "completed");
