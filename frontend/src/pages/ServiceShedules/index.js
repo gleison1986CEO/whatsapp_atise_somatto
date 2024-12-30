@@ -116,7 +116,7 @@ const ServiceShedules = () => {
   const [schedules, dispatch] = useReducer(reducer, []);
   let [scheduleModalOpen, setScheduleModalOpen] = useState(false);
   const [contactId, setContactId] = useState(+getUrlParam("contactId"));
-  
+
   const [updateLocation, setUpdateLocation] = useState(true);
 
   const fetchSchedules = useCallback(async () => {
@@ -124,6 +124,7 @@ const ServiceShedules = () => {
       const { data } = await api.get("/service_schedules/", {
         params: { searchParam, pageNumber },
       });
+
       dispatch({ type: "LOAD_SCHEDULES", payload: data.schedules });
       setHasMore(data.hasMore);
       setLoading(false);
@@ -234,9 +235,9 @@ const ServiceShedules = () => {
     return str;
   };
 
-  const location = useLocation();  
+  const location = useLocation();
 
-  if(location.state.id != null) {
+  if (location.state.id != null) {
     scheduleModalOpen = true;
     selectedSchedule = location.state.id;
   }
@@ -266,7 +267,7 @@ const ServiceShedules = () => {
       />
       <MainHeader>
         <Title>LISTA DE TICKETS PROGRAMADOS</Title>
-        
+
         <MainHeaderButtonsWrapper>
           <TextField
             placeholder={i18n.t("contacts.searchPlaceholder")}
@@ -282,12 +283,12 @@ const ServiceShedules = () => {
             }}
           />
           <Button
-              variant="contained"
-              color="primary"
-              onClick={()=> history.push("/service_schedules_manager")}
-            >
-              GERENCIAR MENSAGENS
-            </Button>
+            variant="contained"
+            color="primary"
+            onClick={() => history.push("/service_schedules_manager")}
+          >
+            GERENCIAR MENSAGENS
+          </Button>
           {/* <Button
             variant="contained"
             color="primary"
@@ -302,7 +303,7 @@ const ServiceShedules = () => {
         variant="outlined"
         onScroll={handleScroll}
       >
-        
+
         <Table size="small">
           <TableHead>
             <TableRow>
@@ -321,17 +322,17 @@ const ServiceShedules = () => {
             <>
               {schedules.map((schedule) => (
                 <TableRow key={schedule.id}>
-                  
+
                   <TableCell align="center">
-                    {schedule.contact.name}
+                    {schedule.contact?.name} {schedule?.hinovaContactName}
                   </TableCell>
 
                   <TableCell align="center" title={schedule.body}>
                     {truncate(schedule.body, 25)}
                   </TableCell>
-                  
+
                   <TableCell align="center">
-                    
+
                     {/* <IconButton
                       size="small"
                       onClick={() => handleEditSchedule(schedule)}

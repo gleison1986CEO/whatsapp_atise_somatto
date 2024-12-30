@@ -115,7 +115,7 @@ const ServiceShedulesManager = () => {
   const [schedules, dispatch] = useReducer(reducer, []);
   let [scheduleModalOpen, setScheduleModalOpen] = useState(false);
   const [contactId, setContactId] = useState(+getUrlParam("contactId"));
-  
+
   const [updateLocation, setUpdateLocation] = useState(true);
 
   const fetchSchedules = useCallback(async () => {
@@ -123,6 +123,7 @@ const ServiceShedulesManager = () => {
       const { data } = await api.get("/service_schedules/", {
         params: { searchParam, pageNumber },
       });
+
       dispatch({ type: "LOAD_SCHEDULES", payload: data.schedules });
       setHasMore(data.hasMore);
       setLoading(false);
@@ -287,11 +288,11 @@ const ServiceShedulesManager = () => {
         variant="outlined"
         onScroll={handleScroll}
       >
-        
+
         <Table size="small">
           <TableHead>
             <TableRow>
-              
+
               <TableCell align="center">
                 {i18n.t("schedules.table.status")}
               </TableCell>
@@ -318,26 +319,26 @@ const ServiceShedulesManager = () => {
             <>
               {schedules.map((schedule) => (
                 <TableRow key={schedule.id}>
-                 
+
                   <TableCell align="center">
                     {capitalize(schedule.status)}
                   </TableCell>
-                  
+
                   <TableCell align="center">
                     {moment(schedule.sendAt).format("DD/MM/YYYY HH:mm:ss")}
                   </TableCell>
-                  
+
                   <TableCell align="center">
-                    {schedule.contact.name}
+                    {schedule?.contact?.name} {schedule?.hinovaContactName}
                   </TableCell>
 
                   <TableCell align="center" title={schedule.body}>
                     {truncate(schedule.body, 25)}
                   </TableCell>
-                  
-        
+
+
                   <TableCell align="center">
-                    
+
                     {/* <IconButton
                       size="small"
                       onClick={() => handleEditSchedule(schedule)}

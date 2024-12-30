@@ -135,7 +135,7 @@ const ScheduleModal = ({ open, onClose, scheduleId, contactId, cleanContact, rel
 	}, [scheduleId, contactId, open, user]);
 
 	const handleClose = () => {
-		
+
 		setAttachment(null);
 		onClose();
 		setSchedule(initialState);
@@ -150,9 +150,10 @@ const ScheduleModal = ({ open, onClose, scheduleId, contactId, cleanContact, rel
 
 	const handleSaveSchedule = async values => {
 		const scheduleData = { ...values, userId: user.id };
+		const { name } = await api.get(`/hinova_desc_user/${scheduleData.contactId}`)
+		scheduleData.hinovaContactName = name
 
 		try {
-			console.log("scheduleData.sendAt", scheduleData.sendAt)
 
 			const response = await api.post(`/service_schedules/validate`, {
 				createAt: scheduleData.sendAt
@@ -188,16 +189,16 @@ const ScheduleModal = ({ open, onClose, scheduleId, contactId, cleanContact, rel
 					await api.post(`/service_schedules/${data.id}/media-upload`, formData);
 				}
 			}
-			toast.success(i18n.t("scheduleModal.success"));			
+			toast.success(i18n.t("scheduleModal.success"));
 			if (typeof reload == 'function') {
-				history.push({pathname:'/service_schedules', state: { id: null }});
+				history.push({ pathname: '/service_schedules', state: { id: null } });
 				reload();
 			}
 
 			if (contactId) {
 				if (typeof cleanContact === 'function') {
 					cleanContact();
-					history.push({pathname:'/service_schedules', state: { id: null }});
+					history.push({ pathname: '/service_schedules', state: { id: null } });
 					reload();
 				}
 			}
@@ -248,7 +249,7 @@ const ScheduleModal = ({ open, onClose, scheduleId, contactId, cleanContact, rel
 				<DialogTitle id="form-dialog-title">
 					<center>{schedule.status === 'ERRO' ? 'Erro no envio' : `Encaminhamento de mensagens`}</center>
 				</DialogTitle>
-				
+
 				<Formik
 					initialValues={schedule}
 					enableReinitialize={true}
@@ -268,9 +269,9 @@ const ScheduleModal = ({ open, onClose, scheduleId, contactId, cleanContact, rel
 										variant="outlined"
 										fullWidth
 									>
-										<Autocomplete											
+										<Autocomplete
 											fullWidth
-											style={{display: "none"}}
+											style={{ display: "none" }}
 											value={currentContact}
 											options={contacts}
 											onChange={(e, contact) => {
@@ -300,7 +301,7 @@ const ScheduleModal = ({ open, onClose, scheduleId, contactId, cleanContact, rel
 										variant="outlined"
 										margin="dense"
 										fullWidth
-										style={{display: "none"}}
+										style={{ display: "none" }}
 									/>
 								</div>
 								<br />
@@ -313,7 +314,7 @@ const ScheduleModal = ({ open, onClose, scheduleId, contactId, cleanContact, rel
 										variant="outlined"
 										margin="dense"
 										fullWidth
-										style={{display: "none"}}
+										style={{ display: "none" }}
 									/>
 								</div>
 								<br />
@@ -328,7 +329,7 @@ const ScheduleModal = ({ open, onClose, scheduleId, contactId, cleanContact, rel
 								<div className={classes.multFieldLine}>
 									{(schedule.mediaPath || attachment) && (
 										<Grid xs={12} item>
-											<Button style={{display: "none"}} startIcon={<AttachFileIcon />}>
+											<Button style={{ display: "none" }} startIcon={<AttachFileIcon />}>
 												{attachment ? attachment.name : schedule.mediaName}
 											</Button>
 											<IconButton
@@ -341,7 +342,7 @@ const ScheduleModal = ({ open, onClose, scheduleId, contactId, cleanContact, rel
 									)}
 									{!attachment && !schedule.mediaPath && (
 										<Button
-										style={{display: "none"}}
+											style={{ display: "none" }}
 											color="primary"
 											onClick={() => attachmentFile.current.click()}
 											disabled={isSubmitting}
@@ -351,10 +352,10 @@ const ScheduleModal = ({ open, onClose, scheduleId, contactId, cleanContact, rel
 										</Button>
 									)}
 								</div>
-								<div style={{padding:"14px"}}>  
-								status: "{capitalize(schedule.status)}"<br />
-								*Escolha a data/hora que deseja emcaminhar esta mensagem ao destinatário!* 
-								
+								<div style={{ padding: "14px" }}>
+									status: "{capitalize(schedule.status)}"<br />
+									*Escolha a data/hora que deseja emcaminhar esta mensagem ao destinatário!*
+
 								</div>
 								<br />
 								<div className={classes.multFieldLine}>
@@ -377,7 +378,7 @@ const ScheduleModal = ({ open, onClose, scheduleId, contactId, cleanContact, rel
 								</div>
 							</DialogContent>
 							<DialogActions>
-				
+
 
 								{(schedule.sentAt === null || schedule.sentAt === "") && (
 									<Button
@@ -386,7 +387,7 @@ const ScheduleModal = ({ open, onClose, scheduleId, contactId, cleanContact, rel
 										disabled={isSubmitting}
 										variant="contained"
 										className={classes.btnWrapper}
-										style={{ backgroundColor: "green", color:"#ffffff",width:"100%", maxWidth:"300px", margin: "0 auto" }}
+										style={{ backgroundColor: "green", color: "#ffffff", width: "100%", maxWidth: "300px", margin: "0 auto" }}
 									>
 										{scheduleId
 											? `ENCAMINHAR MENSAGEM`
@@ -397,19 +398,19 @@ const ScheduleModal = ({ open, onClose, scheduleId, contactId, cleanContact, rel
 												className={classes.buttonProgress}
 											/>
 										)}
-									 </Button>
-									 
+									</Button>
+
 								)}
-					
-								
+
+
 							</DialogActions>
 							<DialogActions>
-							    <a style={{ backgroundColor: "red", color:"#ffffff",width:"100%", padding:"13px",textDecoration:"none", fontWeight:"bold", maxWidth:"300px", margin: "0 auto", marginTop:"10px", borderRadius:"12px" }} href="kanban_services">VOLTAR</a>
+								<a style={{ backgroundColor: "red", color: "#ffffff", width: "100%", padding: "13px", textDecoration: "none", fontWeight: "bold", maxWidth: "300px", margin: "0 auto", marginTop: "10px", borderRadius: "12px" }} href="kanban_services">VOLTAR</a>
 							</DialogActions>
 						</Form>
-					
-						
-							
+
+
+
 					)}
 				</Formik>
 			</Dialog>

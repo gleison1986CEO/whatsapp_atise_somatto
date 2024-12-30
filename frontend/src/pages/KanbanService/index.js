@@ -155,31 +155,6 @@ const KanbanService = () => {
   const popularCards = () => {
     const filteredTickets = tickets;
 
-    // {
-    //   id: "lane0",
-    //     title: "SERVIÇO A",
-    //       cards: filteredTickets.map(ticket => ({
-    //         title: "",
-    //         id: ticket.id.toString(),
-    //         description: (
-
-    //           <div>
-    //             <p>
-    //               TEXTO: {ticket.body}
-    //               <br />
-    //               <br />
-    //               LINK: {ticket.link}
-    //             </p>
-
-    //             <center><button className={classes.button3} style={{ backgroundColor: "green", width: "100%", maxWidth: "300px", margin: "0 auto" }} onClick={() => handleCardClickSend(ticket.id)}>Encaminhar Serviço</button></center>
-    //             <center><button className={classes.button2} style={{ marginRight: '10px', width: "100%", maxWidth: "300px", margin: "0 auto", marginTop: "10px" }} onClick={() => handleCardEditClick(ticket.id)}>Atualizar Serviço</button></center>
-    //             <center><button className={classes.button3} style={{ marginRight: '10px', width: "100%", maxWidth: "300px", margin: "0 auto", marginTop: "10px" }} onClick={() => handleCardClick(ticket.id)}>Deletar Serviço</button></center>
-
-    //           </div>
-    //         )
-    //       })),
-    //   }
-
     const lanes = filteredTickets.map((filtered) => {
       return {
         id: filtered.id,
@@ -336,7 +311,7 @@ const KanbanService = () => {
           reload={fetchTickets}
           aria-labelledby="form-dialog-title"
           scheduleId={selectedSchedule}
-          // contactId={contactId}
+          contactId={contactId}
           cleanContact={cleanContact}
         />
         <NameKambanServiceModal
@@ -345,7 +320,6 @@ const KanbanService = () => {
           reload={fetchTickets}
           aria-labelledby="form-dialog-title"
           scheduleId={selectedSchedule}
-          // contactId={contactId}
           cleanContact={cleanContact}
         />
         <Board

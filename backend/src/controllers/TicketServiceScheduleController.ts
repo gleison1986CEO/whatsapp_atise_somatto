@@ -69,7 +69,8 @@ export const store = async (req: Request, res: Response): Promise<Response> => {
     contactId = "null",
     userId,
     link,
-    filterId
+    filterId,
+    hinovaContactName
   } = req.body;
   const { companyId } = req.user;
 
@@ -80,7 +81,8 @@ export const store = async (req: Request, res: Response): Promise<Response> => {
     companyId,
     userId,
     link,
-    filterId
+    filterId,
+    hinovaContactName
   });
 
   const io = getIO();

@@ -135,7 +135,7 @@ const ScheduleModal = ({ open, onClose, scheduleId, contactId, cleanContact, rel
 	}, [scheduleId, contactId, open, user]);
 
 	const handleClose = () => {
-		
+
 		setAttachment(null);
 		onClose();
 		setSchedule(initialState);
@@ -150,13 +150,7 @@ const ScheduleModal = ({ open, onClose, scheduleId, contactId, cleanContact, rel
 
 	const handleSaveSchedule = async values => {
 		const scheduleData = { ...values, userId: user.id };
-
 		try {
-			console.log("scheduleData.sendAt", scheduleData.sendAt)
-
-			const response = await api.post(`/service_schedules/validate`, {
-				createAt: scheduleData.sendAt
-			});
 
 			// TODO : Removido validação de horário de envio
 			// const { manha, tarde } = response.data.pop();
@@ -188,16 +182,16 @@ const ScheduleModal = ({ open, onClose, scheduleId, contactId, cleanContact, rel
 					await api.post(`/service_schedules/${data.id}/media-upload`, formData);
 				}
 			}
-			toast.success(i18n.t("scheduleModal.success"));			
+			toast.success(i18n.t("scheduleModal.success"));
 			if (typeof reload == 'function') {
-				history.push({pathname:'/service_schedules', state: { id: null }});
+				history.push({ pathname: '/service_schedules', state: { id: null } });
 				reload();
 			}
 
 			if (contactId) {
 				if (typeof cleanContact === 'function') {
 					cleanContact();
-					history.push({pathname:'/service_schedules', state: { id: null }});
+					history.push({ pathname: '/service_schedules', state: { id: null } });
 					reload();
 				}
 			}
@@ -248,7 +242,7 @@ const ScheduleModal = ({ open, onClose, scheduleId, contactId, cleanContact, rel
 				<DialogTitle id="form-dialog-title">
 					<center>{schedule.status === 'ERRO' ? 'Erro no envio' : `Encaminhamento de mensagens`}</center>
 				</DialogTitle>
-				
+
 				<Formik
 					initialValues={schedule}
 					enableReinitialize={true}
@@ -268,9 +262,9 @@ const ScheduleModal = ({ open, onClose, scheduleId, contactId, cleanContact, rel
 										variant="outlined"
 										fullWidth
 									>
-										<Autocomplete											
+										<Autocomplete
 											fullWidth
-											
+
 											value={currentContact}
 											options={contacts}
 											onChange={(e, contact) => {
@@ -300,7 +294,7 @@ const ScheduleModal = ({ open, onClose, scheduleId, contactId, cleanContact, rel
 										variant="outlined"
 										margin="dense"
 										fullWidth
-										
+
 									/>
 								</div>
 								<br />
@@ -313,7 +307,7 @@ const ScheduleModal = ({ open, onClose, scheduleId, contactId, cleanContact, rel
 										variant="outlined"
 										margin="dense"
 										fullWidth
-										
+
 									/>
 								</div>
 								<br />
@@ -328,7 +322,7 @@ const ScheduleModal = ({ open, onClose, scheduleId, contactId, cleanContact, rel
 								<div className={classes.multFieldLine}>
 									{(schedule.mediaPath || attachment) && (
 										<Grid xs={12} item>
-											<Button  startIcon={<AttachFileIcon />}>
+											<Button startIcon={<AttachFileIcon />}>
 												{attachment ? attachment.name : schedule.mediaName}
 											</Button>
 											<IconButton
@@ -341,7 +335,7 @@ const ScheduleModal = ({ open, onClose, scheduleId, contactId, cleanContact, rel
 									)}
 									{!attachment && !schedule.mediaPath && (
 										<Button
-										
+
 											color="primary"
 											onClick={() => attachmentFile.current.click()}
 											disabled={isSubmitting}
@@ -372,7 +366,7 @@ const ScheduleModal = ({ open, onClose, scheduleId, contactId, cleanContact, rel
 								</div>
 							</DialogContent>
 							<DialogActions>
-				
+
 
 								{(schedule.sentAt === null || schedule.sentAt === "") && (
 									<Button
@@ -381,7 +375,7 @@ const ScheduleModal = ({ open, onClose, scheduleId, contactId, cleanContact, rel
 										disabled={isSubmitting}
 										variant="contained"
 										className={classes.btnWrapper}
-										style={{ backgroundColor: "green", color:"#ffffff",width:"100%", maxWidth:"300px", margin: "0 auto" }}
+										style={{ backgroundColor: "green", color: "#ffffff", width: "100%", maxWidth: "300px", margin: "0 auto" }}
 									>
 										{scheduleId
 											? `REENCAMINHAR MENSAGEM`
@@ -392,16 +386,16 @@ const ScheduleModal = ({ open, onClose, scheduleId, contactId, cleanContact, rel
 												className={classes.buttonProgress}
 											/>
 										)}
-									 </Button>
-									 
+									</Button>
+
 								)}
-					
-								
+
+
 							</DialogActions>
 						</Form>
-					
-						
-							
+
+
+
 					)}
 				</Formik>
 			</Dialog>

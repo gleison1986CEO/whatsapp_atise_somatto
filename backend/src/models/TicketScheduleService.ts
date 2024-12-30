@@ -53,6 +53,9 @@ class TicketScheduleService extends Model<TicketScheduleService> {
   @Column
   status: string;
 
+  @Column
+  hinovaContactName: string;
+
   @ForeignKey(() => FilterNameTicket)
   @Column
   filterId: number;

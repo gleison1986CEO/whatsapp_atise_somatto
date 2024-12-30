@@ -14,6 +14,7 @@ interface ScheduleData {
   ticketId?: number;
   userId?: number;
   link?: string;
+  hinovaContactName?: string;
   mediaPath?: string;
   mediaName?: string;
   filterId?: number
@@ -46,6 +47,7 @@ const UpdateUserService = async ({
     userId,
     link,
     mediaPath,
+    hinovaContactName,
     mediaName,
     filterId
   } = scheduleData;
@@ -66,6 +68,7 @@ const UpdateUserService = async ({
     link,
     mediaPath,
     mediaName,
+    hinovaContactName,
     filterId
   });
 

@@ -44,7 +44,8 @@ export const store = async (req: Request, res: Response): Promise<Response> => {
     userId,
     link,
     mediaPath,
-    mediaName
+    mediaName,
+    hinovaContactName
   } = req.body;
 
   const { companyId } = req.user;
@@ -57,7 +58,8 @@ export const store = async (req: Request, res: Response): Promise<Response> => {
     userId,
     link,
     mediaPath,
-    mediaName
+    mediaName,
+    hinovaContactName
   });
 
   const io = getIO();

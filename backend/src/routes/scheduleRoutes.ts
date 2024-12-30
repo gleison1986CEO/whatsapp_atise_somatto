@@ -4,6 +4,7 @@ import isAuth from "../middleware/isAuth";
 import * as ScheduleController from "../controllers/ScheduleController";
 import * as ServiceScheduleController from "../controllers/ServiceScheduleController";
 import * as TicketServiceScheduleController from "../controllers/TicketServiceScheduleController";
+import * as hinovaService from "../api/hinova";
 import * as AnnouncementController from "../controllers/AnnouncementController";
 import routes from "./announcementRoutes";
 import multer from "multer";
@@ -61,6 +62,9 @@ scheduleRoutes.post("/ticket_service_schedules", isAuth, TicketServiceScheduleCo
 scheduleRoutes.post("/ticket_service_schedules_ticket", isAuth, TicketServiceScheduleController.storeTicket);
 scheduleRoutes.get("/ticket_service_schedules_ticket", isAuth, TicketServiceScheduleController.getTickets);
 scheduleRoutes.delete("/ticket_service_schedules_ticket/:id", isAuth, TicketServiceScheduleController.removeTicket);
+
+scheduleRoutes.post("/hinova_users", isAuth, hinovaService.listAssociate);
+scheduleRoutes.get("/hinova_desc_user/:userCpf", isAuth, hinovaService.associateData);
 
 scheduleRoutes.put("/ticket_service_schedules/:scheduleId", isAuth, TicketServiceScheduleController.update);
 

@@ -113,8 +113,8 @@ const KambamServiceModal = ({ open, onClose, scheduleId, contactId, cleanContact
 		if (open) {
 			try {
 				(async () => {
-					const { data: contactList } = await api.get('/contacts/list', { params: { companyId: companyId } });
-					let customList = contactList.map((c) => ({ id: c.id, name: c.name }));
+					const { data: contactList } = await api.post('/hinova_users');
+					let customList = contactList.map((c) => ({ id: c.codigo_associado, name: c.nome }));
 					if (isArray(customList)) {
 						setContacts([{ id: "", name: "" }, ...customList]);
 					}
@@ -161,9 +161,6 @@ const KambamServiceModal = ({ open, onClose, scheduleId, contactId, cleanContact
 
 	const handleSaveSchedule = async values => {
 		const scheduleData = { ...values, userId: user.id };
-
-		console.log("SCHEDULEDD", scheduleData);
-
 
 		try {
 			if (scheduleId) {
@@ -267,7 +264,8 @@ const KambamServiceModal = ({ open, onClose, scheduleId, contactId, cleanContact
 											options={contacts}
 											onChange={(e, contact) => {
 												const contactId = contact ? contact.id : '';
-												setSchedule({ ...schedule, contactId });
+												const contactName = contact ? contact.name : '';
+												setSchedule({ ...schedule, contactId, hinovaContactName: contactName });
 												setCurrentContact(contact ? contact : initialContact);
 											}}
 											getOptionLabel={(option) => option.name}

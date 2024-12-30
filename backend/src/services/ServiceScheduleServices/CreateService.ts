@@ -13,6 +13,7 @@ interface Request {
   mediaPath?: string;
   mediaName?: string;
   filterId?: string;
+  hinovaContactName?: string;
 }
 
 const CreateService = async ({
@@ -23,7 +24,8 @@ const CreateService = async ({
   userId,
   link,
   mediaPath,
-  mediaName
+  mediaName,
+  hinovaContactName
 }: Request): Promise<ScheduleService> => {
   const schema = Yup.object().shape({
     body: Yup.string().required().min(5),
@@ -46,7 +48,8 @@ const CreateService = async ({
       link,
       mediaPath,
       mediaName,
-      status: 'PENDENTE'
+      status: 'PENDENTE',
+      hinovaContactName
     }
   );
 

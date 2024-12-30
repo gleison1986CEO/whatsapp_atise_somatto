@@ -1,4 +1,5 @@
 import * as Sentry from "@sentry/node";
+import * as hinovaService from "./api/hinova";
 import Queue from "bull";
 import { MessageData, SendMessage } from "./helpers/SendMessage";
 import Whatsapp from "./models/Whatsapp";
@@ -118,7 +119,7 @@ async function handleVerifySchedules(job) {
           { schedule },
           { delay: 40000 }
         );
-        logger.info(`Disparo agendado para: ${schedule.contact.name}`);
+        logger.info(`Disparo agendado para: ${schedule.contact?.name}`);
       });
     }
   } catch (e: any) {
@@ -153,7 +154,7 @@ async function handleVerifyServiceSchedules(job) {
           { schedule },
           { delay: 40000 }
         );
-        logger.info(`Disparo do serviço agendado para: ${schedule.contact.name}`);
+        logger.info(`Disparo do serviço agendado para: ${schedule.contact?.name}`);
       });
     }
   } catch (e: any) {
@@ -189,7 +190,7 @@ async function handleSendScheduledMessage(job) {
       status: "ENVIADA"
     });
 
-    logger.info(`Mensagem agendada enviada para: ${schedule.contact.name}`);
+    logger.info(`Mensagem agendada enviada para: ${schedule.contact?.name}`);
     sendScheduledMessages.clean(15000, "completed");
   } catch (e: any) {
     Sentry.captureException(e);
@@ -201,12 +202,18 @@ async function handleSendScheduledMessage(job) {
   }
 }
 
+function getNestedValue(path, obj) {
+  return path.split('.').reduce((acc, key) => acc && acc[key], obj);
+}
+
 
 async function handleSendServiceScheduledMessage(job) {
   const {
     data: { schedule }
   } = job;
   let scheduleRecord: ScheduleService | null = null;
+
+  const hinovaUserData = await hinovaService.associateDataFromBackEnd(schedule.contactId)
 
   try {
     logger.info(`Busca de Serviços 0711`);
@@ -219,21 +226,36 @@ async function handleSendServiceScheduledMessage(job) {
   try {
     const whatsapp = await GetDefaultWhatsApp(schedule.companyId);
 
+    let result = schedule.body.replace(/{(.*?)}/g, (_, key) => {
+      // Mapeia campos personalizados
+      const fieldMap = {
+        "veiculo_placa": "veiculos[0].placa",
+        "veiculo_chassi": "veiculos[0].chassi",
+        "veiculo_fipe": "veiculos[0].valor_fipe",
+        "veiculo_descricao_modelo": "veiculos[0].descricao_modelo"
+      };
+
+      // Substitui chaves personalizadas ou retorna diretamente do JSON
+      const path = fieldMap[key] || key;
+      const value = getNestedValue(path.replace(/\[(\d+)\]/g, ".$1"), hinovaUserData);
+      return value !== undefined ? value : `{${key}}`; // Retorna marcador se valor não encontrado
+    });
+
     if (schedule.link) {
-      schedule.body = schedule.body + ' \n\n ' + 'link: ' + schedule.link
+      result = result + ' \n\n ' + 'link: ' + schedule.link
     }
 
     if (schedule.mediaPath) {
       const filePath = path.resolve("public", schedule.mediaPath);
       await SendMessage(whatsapp, {
-        number: schedule.contact.number,
-        body: schedule.body,
+        number: "55" + hinovaUserData.telefone_celular.replace(/[()-]/g, ""),
+        body: result,
         mediaPath: filePath
       });
     } else {
       await SendMessage(whatsapp, {
-        number: schedule.contact.number,
-        body: schedule.body
+        number: "55" + hinovaUserData.telefone_celular.replace(/[()-]/g, ""),
+        body: result
       });
     }
     await scheduleRecord?.update({
@@ -241,7 +263,7 @@ async function handleSendServiceScheduledMessage(job) {
       status: "ENVIADA"
     });
 
-    logger.info(`Mensagem agendada enviada para: ${schedule.contact.name}`);
+    logger.info(`Mensagem agendada enviada para: ${schedule.contact?.name}`);
     sendScheduledMessages.clean(15000, "completed");
   } catch (e: any) {
     Sentry.captureException(e);
