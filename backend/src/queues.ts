@@ -245,16 +245,21 @@ async function handleSendServiceScheduledMessage(job) {
       result = result + ' \n\n ' + 'link: ' + schedule.link
     }
 
+    const phoneNumber =
+      process.env.TEST_HINOVA == "true" ?
+        process.env.PHONE_TEST_HINOVA :
+        "55" + hinovaUserData.telefone_celular.replace(/[()-]/g, "")
+
     if (schedule.mediaPath) {
       const filePath = path.resolve("public", schedule.mediaPath);
       await SendMessage(whatsapp, {
-        number: "55" + hinovaUserData.telefone_celular.replace(/[()-]/g, ""),
+        number: phoneNumber,
         body: result,
         mediaPath: filePath
       });
     } else {
       await SendMessage(whatsapp, {
-        number: "55" + hinovaUserData.telefone_celular.replace(/[()-]/g, ""),
+        number: phoneNumber,
         body: result
       });
     }
