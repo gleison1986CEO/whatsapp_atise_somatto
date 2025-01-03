@@ -37,7 +37,6 @@ class TicketScheduleService extends Model<TicketScheduleService> {
   @Column
   sentAt: Date;
 
-  @ForeignKey(() => Contact)
   @Column
   contactId: number;
 
