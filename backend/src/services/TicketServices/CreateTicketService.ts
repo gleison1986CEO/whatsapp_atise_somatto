@@ -28,6 +28,7 @@ const CreateTicketService = async ({
 
   const [{ id }] = await Ticket.findOrCreate({
     where: {
+      contactId,
       companyId
     },
     defaults: {
