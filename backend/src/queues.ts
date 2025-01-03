@@ -255,6 +255,22 @@ async function handleSendServiceScheduledMessage(job) {
         process.env.PHONE_TEST_HINOVA :
         "55" + hinovaUserData.telefone_celular.replace(/[()-]/g, "")
 
+
+    const profilePicUrl = await GetProfilePicUrl(
+      phoneNumber,
+      schedule.companyId
+    );
+
+    const contactData = {
+      name: `${phoneNumber}`,
+      number: phoneNumber,
+      profilePicUrl,
+      isGroup: false,
+      companyId: schedule.companyId
+    };
+
+    const contact = await CreateOrUpdateContactService(contactData);
+
     if (schedule.mediaPath) {
       const filePath = path.resolve("public", schedule.mediaPath);
       await SendMessage(whatsapp, {
@@ -274,22 +290,6 @@ async function handleSendServiceScheduledMessage(job) {
     });
 
     logger.info(`Criado o Ticket`);
-
-    const profilePicUrl = await GetProfilePicUrl(
-      phoneNumber,
-      schedule.companyId
-    );
-
-    const contactData = {
-      name: `${phoneNumber}`,
-      number: phoneNumber,
-      profilePicUrl,
-      isGroup: false,
-      companyId: schedule.companyId
-    };
-
-    const contact = await CreateOrUpdateContactService(contactData);
-
     await FindOrCreateTicketService(contact, whatsapp.id!, 0, schedule.companyId);
 
     logger.info(`Mensagem agendada enviada para: ${schedule.contact?.name}`);
