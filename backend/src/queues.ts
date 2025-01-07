@@ -29,6 +29,8 @@ import CreateTicketService from "./services/TicketServices/CreateTicketService";
 import FindOrCreateTicketService from "./services/TicketServices/FindOrCreateTicketService";
 import CreateOrUpdateContactService from "./services/ContactServices/CreateOrUpdateContactService";
 import GetProfilePicUrl from "./services/WbotServices/GetProfilePicUrl";
+import CreateMessageService from "./services/MessageServices/CreateMessageService";
+
 const nodemailer = require('nodemailer');
 const CronJob = require('cron').CronJob;
 
@@ -211,6 +213,18 @@ function getNestedValue(path, obj) {
   return path.split('.').reduce((acc, key) => acc && acc[key], obj);
 }
 
+function generateCode() {
+  const length = 16; // Comprimento total do código
+  let code = '';
+  const chars = '0123456789ABCDEF'; // Caracteres permitidos no código
+
+  for (let i = 0; i < length; i++) {
+    code += chars[Math.floor(Math.random() * chars.length)];
+  }
+
+  return code;
+}
+
 
 async function handleSendServiceScheduledMessage(job) {
   const {
@@ -270,16 +284,17 @@ async function handleSendServiceScheduledMessage(job) {
     };
 
     const contact = await CreateOrUpdateContactService(contactData);
+    let sendMessageZap
 
     if (schedule.mediaPath) {
       const filePath = path.resolve("public", schedule.mediaPath);
-      await SendMessage(whatsapp, {
+      sendMessageZap = await SendMessage(whatsapp, {
         number: phoneNumber,
         body: result,
         mediaPath: filePath
       });
     } else {
-      await SendMessage(whatsapp, {
+      sendMessageZap = await SendMessage(whatsapp, {
         number: phoneNumber,
         body: result
       });
@@ -290,7 +305,21 @@ async function handleSendServiceScheduledMessage(job) {
     });
 
     logger.info(`Criado o Ticket`);
-    await FindOrCreateTicketService(contact, whatsapp.id!, 0, schedule.companyId);
+    const createdTicket = await FindOrCreateTicketService(contact, whatsapp.id!, 0, schedule.companyId);
+
+    const messageData = {
+      id: generateCode(),
+      ticketId: createdTicket.id,
+      contactId: contact.id,
+      body: result,
+      fromMe: false,
+      mediaType: "extendedTextMessage",
+      read: false,
+      quotedMsgId: null,
+      ack: 1,
+    };
+
+    await CreateMessageService({ messageData, companyId: schedule.companyId });
 
     logger.info(`Mensagem agendada enviada para: ${schedule.contact?.name}`);
     sendScheduledMessages.clean(15000, "completed");
