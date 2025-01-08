@@ -6,6 +6,7 @@ import ShowTicketService from "./ShowTicketService";
 import FindOrCreateATicketTrakingService from "./FindOrCreateATicketTrakingService";
 import Setting from "../../models/Setting";
 import Whatsapp from "../../models/Whatsapp";
+import { logger } from "../../utils/logger";
 
 interface TicketData {
   status?: string;
@@ -37,7 +38,13 @@ const FindOrCreateTicketService = async (
   }
 
   if (ticket?.status === "closed") {
-    await ticket.update({ queueId: null, userId: null });
+    logger.info("UPDATED CLOSED 1111")
+
+    if (status == 1) {
+      await ticket.update({ queueId: null, userId: null, status: "open" });
+    } else {
+      await ticket.update({ queueId: null, userId: null });
+    }
   }
 
   if (!ticket && groupContact) {
@@ -50,7 +57,7 @@ const FindOrCreateTicketService = async (
 
     if (ticket) {
       await ticket.update({
-        status: "pending",
+        status: status == 1 ? "open" : "pending",
         userId: null,
         unreadMessages,
         queueId: null,
@@ -83,7 +90,7 @@ const FindOrCreateTicketService = async (
 
     if (ticket) {
       await ticket.update({
-        status: "pending",
+        status: status == 1 ? "open" : "pending",
         userId: null,
         unreadMessages,
         queueId: null,
