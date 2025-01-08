@@ -287,6 +287,7 @@ async function handleSendServiceScheduledMessage(job) {
     let sendMessageZap
 
     if (schedule.mediaPath) {
+      logger.info("HAS FILE")
       const filePath = path.resolve("public", schedule.mediaPath);
       sendMessageZap = await SendMessage(whatsapp, {
         number: phoneNumber,
@@ -294,6 +295,7 @@ async function handleSendServiceScheduledMessage(job) {
         mediaPath: filePath
       });
     } else {
+      logger.info("NOT FILE")
       sendMessageZap = await SendMessage(whatsapp, {
         number: phoneNumber,
         body: result
@@ -307,19 +309,21 @@ async function handleSendServiceScheduledMessage(job) {
     logger.info(`Criado o Ticket`);
     const createdTicket = await FindOrCreateTicketService(contact, whatsapp.id!, 0, schedule.companyId, null, 1);
 
-    const messageData = {
-      id: generateCode(),
-      ticketId: createdTicket.id,
-      contactId: contact.id,
-      body: result,
-      fromMe: false,
-      mediaType: "extendedTextMessage",
-      read: false,
-      quotedMsgId: null,
-      ack: 1,
-    };
 
-    await CreateMessageService({ messageData, companyId: schedule.companyId });
+    if (!schedule.mediaPath) {
+      const messageData = {
+        id: generateCode(),
+        ticketId: createdTicket.id,
+        contactId: contact.id,
+        body: result,
+        fromMe: false,
+        mediaType: "extendedTextMessage",
+        read: false,
+        quotedMsgId: null,
+        ack: 1,
+      };
+      await CreateMessageService({ messageData, companyId: schedule.companyId });
+    }
 
     logger.info(`Mensagem agendada enviada para: ${schedule.contact?.name}`);
     sendScheduledMessages.clean(15000, "completed");
