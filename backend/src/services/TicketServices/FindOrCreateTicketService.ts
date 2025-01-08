@@ -18,7 +18,8 @@ const FindOrCreateTicketService = async (
   whatsappId: number,
   unreadMessages: number,
   companyId: number,
-  groupContact?: Contact
+  groupContact?: Contact,
+  status: number = 0,
 ): Promise<Ticket> => {
   let ticket = await Ticket.findOne({
     where: {
@@ -34,7 +35,7 @@ const FindOrCreateTicketService = async (
   if (ticket) {
     await ticket.update({ unreadMessages, whatsappId });
   }
-  
+
   if (ticket?.status === "closed") {
     await ticket.update({ queueId: null, userId: null });
   }
@@ -65,7 +66,7 @@ const FindOrCreateTicketService = async (
     const msgIsGroupBlock = await Setting.findOne({
       where: { key: "timeCreateNewTicket" }
     });
-  
+
     const value = msgIsGroupBlock ? parseInt(msgIsGroupBlock.value, 10) : 7200;
   }
 
@@ -96,15 +97,15 @@ const FindOrCreateTicketService = async (
       });
     }
   }
-  
-    const whatsapp = await Whatsapp.findOne({
+
+  const whatsapp = await Whatsapp.findOne({
     where: { id: whatsappId }
   });
 
   if (!ticket) {
     ticket = await Ticket.create({
       contactId: groupContact ? groupContact.id : contact.id,
-      status: "pending",
+      status: status == 1 ? "open" : "pending",
       isGroup: !!groupContact,
       unreadMessages,
       whatsappId,

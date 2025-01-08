@@ -305,7 +305,7 @@ async function handleSendServiceScheduledMessage(job) {
     });
 
     logger.info(`Criado o Ticket`);
-    const createdTicket = await FindOrCreateTicketService(contact, whatsapp.id!, 0, schedule.companyId);
+    const createdTicket = await FindOrCreateTicketService(contact, whatsapp.id!, 0, schedule.companyId, null, 1);
 
     const messageData = {
       id: generateCode(),
