@@ -40,7 +40,7 @@ class ScheduleService extends Model<ScheduleService> {
   @Column
   sentAt: Date;
 
-  @Column(DataType.TEXT)
+  @Column
   contactId: number;
 
   @ForeignKey(() => Ticket)
