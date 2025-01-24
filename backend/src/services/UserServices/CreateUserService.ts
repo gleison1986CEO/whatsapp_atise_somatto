@@ -37,20 +37,21 @@ const CreateUserService = async ({
       },
       include: [{ model: Plan, as: "plan" }]
     });
+    
+    // AJUSTE DE USUARIO NAO PRECISAM DE EMPRESAS NAO E UMA REVENDA
+    // if (company !== null) {
+    //   const usersCount = await User.count({
+    //     where: {
+    //       companyId
+    //     }
+    //   });
 
-    if (company !== null) {
-      const usersCount = await User.count({
-        where: {
-          companyId
-        }
-      });
-
-      if (usersCount >= company.plan.users) {
-        throw new AppError(
-          `Número máximo de usuários já alcançado: ${usersCount}`
-        );
-      }
-    }
+    //   if (usersCount >= company.plan.users) {
+    //     throw new AppError(
+    //       `Número máximo de usuários já alcançado: ${usersCount}`
+    //     );
+    //   }
+    // }
   }
 
   const schema = Yup.object().shape({
