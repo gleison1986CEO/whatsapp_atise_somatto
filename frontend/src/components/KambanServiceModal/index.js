@@ -113,11 +113,9 @@ const KambamServiceModal = ({ open, onClose, scheduleId, contactId, cleanContact
 		if (open) {
 			try {
 				(async () => {
-					const { data: contactList } = await api.get('/contacts/list', { params: { companyId: companyId } });
 					const { data: contactListHinova } = await api.post('/hinova_users');
-					let customList = contactList.map((c) => ({ id: c.id, name: c.name }));
 					let customListHinova = contactListHinova.map((c) => ({ id: c.codigo_associado, name: c.nome }));
-					let combinedList = [{ id: "", name: "" }, ...customList, ...customListHinova];
+					let combinedList = [{ id: "", name: "" }, ...customListHinova];
 					combinedList.sort((a, b) => a.name.localeCompare(b.name));
 					if (isArray(combinedList)) {
 						setContacts(combinedList);
