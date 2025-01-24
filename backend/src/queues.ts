@@ -232,7 +232,7 @@ async function handleSendServiceScheduledMessage(job) {
   } = job;
   let scheduleRecord: ScheduleService | null = null;
 
-  const hinovaUserData = await hinovaService.associateDataFromBackEnd(schedule.contactId)
+  const hinovaUserData = schedule
 
   try {
     logger.info(`Busca de Serviços 0711`);
@@ -245,29 +245,12 @@ async function handleSendServiceScheduledMessage(job) {
   try {
     const whatsapp = await GetDefaultWhatsApp(schedule.companyId);
 
-    let result = schedule.body.replace(/{(.*?)}/g, (_, key) => {
-      // Mapeia campos personalizados
-      const fieldMap = {
-        "veiculo_placa": "veiculos[0].placa",
-        "veiculo_chassi": "veiculos[0].chassi",
-        "veiculo_fipe": "veiculos[0].valor_fipe",
-        "veiculo_descricao_modelo": "veiculos[0].descricao_modelo"
-      };
-
-      // Substitui chaves personalizadas ou retorna diretamente do JSON
-      const path = fieldMap[key] || key;
-      const value = getNestedValue(path.replace(/\[(\d+)\]/g, ".$1"), hinovaUserData);
-      return value !== undefined ? value : `{${key}}`; // Retorna marcador se valor não encontrado
-    });
-
-    if (schedule.link) {
-      result = result + ' \n\n ' + 'link: ' + schedule.link
-    }
+    let result = hinovaUserData.body;
 
     const phoneNumber =
       process.env.TEST_HINOVA == "true" ?
         process.env.PHONE_TEST_HINOVA :
-        "55" + hinovaUserData.telefone_celular.replace(/[()-]/g, "")
+        hinovaUserData.contact.phone
 
 
     const profilePicUrl = await GetProfilePicUrl(

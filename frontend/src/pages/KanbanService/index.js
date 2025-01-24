@@ -299,14 +299,14 @@ const KanbanService = () => {
             >
               NOVO SERVIÇO
             </Button>
-            <Button
+            {/* <Button
               style={{ marginRight: "7px" }}
               variant="contained"
               color="primary"
               onClick={handleOpenAllServicesModal}
             >
               CAMPOS DISPONÍVEIS
-            </Button>
+            </Button> */}
             <Button
               style={{ marginRight: "7px" }}
               variant="contained"
