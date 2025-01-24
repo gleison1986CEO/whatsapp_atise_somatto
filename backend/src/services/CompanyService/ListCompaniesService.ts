@@ -27,7 +27,7 @@ const ListCompaniesService = async ({
         }
       ]
     };
-    const limit = 20;
+    const limit = 20000;
     const offset = limit * (+pageNumber - 1);
     
 
