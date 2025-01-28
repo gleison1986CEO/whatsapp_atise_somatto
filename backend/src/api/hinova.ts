@@ -73,6 +73,11 @@ export const listAssociate = async (req: Request, res: Response) => {
 
 export const associateData = async (req: Request, res: Response) => {
     try {
+
+        if (req.params.userCpf === "0") {
+            return res.json();
+        }
+
         const auth = await authUser();
 
         const options = {

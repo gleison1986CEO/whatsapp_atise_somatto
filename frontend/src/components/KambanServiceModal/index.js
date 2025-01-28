@@ -190,8 +190,9 @@ const KambamServiceModal = ({ open, onClose, scheduleId, contactId, cleanContact
 			} else {
 				// TODO : INCLUSAO ATTACH
 
-
-
+				if (attachmentCsv != null && scheduleData.contactId == "") {
+					scheduleData.contactId = 0
+				}
 
 				const { data } = await api.post("/ticket_service_schedules", scheduleData);
 				if (attachmentCsv != null) {

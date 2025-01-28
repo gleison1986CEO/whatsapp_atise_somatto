@@ -230,15 +230,51 @@ function generateCode() {
 
 async function handleSendServiceScheduledMessage(job) {
 
-  // TODO : Inclusao do CSV
-  //logger.info(schedule.CsvUrl)
+  // TODO : Inclusao do CSV  
 
   const {
     data: { schedule }
   } = job;
   let scheduleRecord: ScheduleService | null = null;
 
-  //schedule.hinovaContactName.includes("PLATAFORMA")
+  const whatsapp = await GetDefaultWhatsApp(schedule.companyId);
+
+
+  if (schedule.contact == null && schedule.CsvUrl) {
+    fs.createReadStream(schedule.CsvUrl)
+      .pipe(csvParser({
+        separator: ';',
+        headers: ['name', 'number', 'message'],
+        skipLines: 1,
+      }))
+      .on('data', async (data) => {
+        if (data.number != "") {
+          await SendMessage(whatsapp, {
+            number: "55" + data.number,
+            body: data.message
+          });
+        }
+      })
+    return
+  } else if (schedule.CsvUrl) {
+    fs.createReadStream(schedule.CsvUrl)
+      .pipe(csvParser({
+        separator: ';',
+        headers: ['name', 'number', 'message'],
+        skipLines: 1,
+      }))
+      .on('data', async (data) => {
+        if (data.number != "") {
+          await SendMessage(whatsapp, {
+            number: "55" + data.number,
+            body: data.message
+          });
+        }
+      })
+      .on('end', () => {
+      });
+  }
+
   const hinovaUserData = await hinovaService.associateDataFromBackEnd(schedule.contactId)
 
   try {
@@ -250,7 +286,6 @@ async function handleSendServiceScheduledMessage(job) {
   }
 
   try {
-    const whatsapp = await GetDefaultWhatsApp(schedule.companyId);
 
     let result
 
@@ -319,26 +354,6 @@ async function handleSendServiceScheduledMessage(job) {
         number: phoneNumber,
         body: result
       });
-    }
-
-    // TODO : Faz envio via CSV
-    if (schedule.CsvUrl) {
-      fs.createReadStream(schedule.CsvUrl)
-        .pipe(csvParser({
-          separator: ';',
-          headers: ['name', 'number', 'message'],
-          skipLines: 1,
-        }))
-        .on('data', async (data) => {
-          if (data.number != "") {
-            await SendMessage(whatsapp, {
-              number: "55" + data.number,
-              body: data.message
-            });
-          }
-        })
-        .on('end', () => {
-        });
     }
 
     await scheduleRecord?.update({
