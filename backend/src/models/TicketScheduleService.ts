@@ -10,7 +10,6 @@ import {
   BelongsTo,
   ForeignKey
 } from "sequelize-typescript";
-import Contact from "./Contact";
 import FilterNameTicket from "./FilterNameTicket";
 @Table
 class TicketScheduleService extends Model<TicketScheduleService> {
@@ -48,6 +47,9 @@ class TicketScheduleService extends Model<TicketScheduleService> {
 
   @Column
   companyId: number;
+
+  @Column
+  CsvUrl: string;
 
   @Column
   status: string;

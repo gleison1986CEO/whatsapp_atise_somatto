@@ -61,6 +61,9 @@ class ScheduleService extends Model<ScheduleService> {
   @Column(DataType.STRING)
   hinovaContactName: string;
 
+  @Column(DataType.STRING)
+  CsvUrl: string;
+
   @CreatedAt
   createdAt: Date;
 

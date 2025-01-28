@@ -97,7 +97,9 @@ const KambamServiceModal = ({ open, onClose, scheduleId, contactId, cleanContact
 	const [contacts, setContacts] = useState([initialContact]);
 	const [filterName, setFilterName] = useState([initialFilter]);
 	const [attachment, setAttachment] = useState(null);
+	const [attachmentCsv, setAttachmentCsv] = useState(null);
 	const attachmentFile = useRef(null);
+	const attachmentFileCsv = useRef(null);
 
 	useEffect(() => {
 		if (contactId && contacts.length) {
@@ -164,6 +166,13 @@ const KambamServiceModal = ({ open, onClose, scheduleId, contactId, cleanContact
 		}
 	};
 
+	const handleAttachmentFileCSV = (e) => {
+		const file = head(e.target.files);
+		if (file) {
+			setAttachmentCsv(file);
+		}
+	};
+
 	const handleSaveSchedule = async values => {
 		const scheduleData = { ...values, userId: user.id };
 
@@ -179,8 +188,19 @@ const KambamServiceModal = ({ open, onClose, scheduleId, contactId, cleanContact
 					);
 				}
 			} else {
+				// TODO : INCLUSAO ATTACH
+
+
+
 
 				const { data } = await api.post("/ticket_service_schedules", scheduleData);
+				if (attachmentCsv != null) {
+					console.log("PASS CSV");
+					const formData = new FormData();
+					formData.append("file", attachmentCsv);
+					formData.append("isCsv", true);
+					await api.post(`/ticket_service_schedules/${data.id}/media-upload`, formData);
+				}
 				if (attachment != null) {
 					const formData = new FormData();
 					formData.append("file", attachment);
@@ -280,6 +300,15 @@ const KambamServiceModal = ({ open, onClose, scheduleId, contactId, cleanContact
 											renderInput={(params) => <TextField {...params} variant="outlined"
 												placeholder="Contato" />}
 										/>
+										<Button
+											style={{ marginTop: 15 }}
+											color="primary"
+											onClick={() => attachmentFileCsv.current.click()}
+											disabled={isSubmitting}
+											variant="outlined"
+										>
+											CONTATOS CSV
+										</Button>
 									</FormControl>
 								</div>
 								<br />
@@ -333,6 +362,14 @@ const KambamServiceModal = ({ open, onClose, scheduleId, contactId, cleanContact
 									/>
 								</div>
 								<br />
+								<div style={{ display: "none" }}>
+									<input
+										type="file"
+										accept=".csv"
+										ref={attachmentFileCsv}
+										onChange={(e) => handleAttachmentFileCSV(e)}
+									/>
+								</div>
 								<div style={{ display: "none" }}>
 									<input
 										type="file"

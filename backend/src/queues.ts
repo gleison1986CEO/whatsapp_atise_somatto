@@ -30,6 +30,8 @@ import FindOrCreateTicketService from "./services/TicketServices/FindOrCreateTic
 import CreateOrUpdateContactService from "./services/ContactServices/CreateOrUpdateContactService";
 import GetProfilePicUrl from "./services/WbotServices/GetProfilePicUrl";
 import CreateMessageService from "./services/MessageServices/CreateMessageService";
+import csvParser from "csv-parser";
+import fs from 'fs';
 
 const nodemailer = require('nodemailer');
 const CronJob = require('cron').CronJob;
@@ -227,6 +229,10 @@ function generateCode() {
 
 
 async function handleSendServiceScheduledMessage(job) {
+
+  // TODO : Inclusao do CSV
+  //logger.info(schedule.CsvUrl)
+
   const {
     data: { schedule }
   } = job;
@@ -302,7 +308,6 @@ async function handleSendServiceScheduledMessage(job) {
     let sendMessageZap
 
     if (schedule.mediaPath) {
-      logger.info("HAS FILE")
       const filePath = path.resolve("public", schedule.mediaPath);
       sendMessageZap = await SendMessage(whatsapp, {
         number: phoneNumber,
@@ -310,12 +315,32 @@ async function handleSendServiceScheduledMessage(job) {
         mediaPath: filePath
       });
     } else {
-      logger.info("NOT FILE")
       sendMessageZap = await SendMessage(whatsapp, {
         number: phoneNumber,
         body: result
       });
     }
+
+    // TODO : Faz envio via CSV
+    if (schedule.CsvUrl) {
+      fs.createReadStream(schedule.CsvUrl)
+        .pipe(csvParser({
+          separator: ';',
+          headers: ['name', 'number', 'message'],
+          skipLines: 1,
+        }))
+        .on('data', async (data) => {
+          if (data.number != "") {
+            await SendMessage(whatsapp, {
+              number: "55" + data.number,
+              body: data.message
+            });
+          }
+        })
+        .on('end', () => {
+        });
+    }
+
     await scheduleRecord?.update({
       sentAt: moment().format("YYYY-MM-DD HH:mm"),
       status: "ENVIADA"
@@ -323,7 +348,6 @@ async function handleSendServiceScheduledMessage(job) {
 
     logger.info(`Criado o Ticket`);
     const createdTicket = await FindOrCreateTicketService(contact, whatsapp.id!, 0, schedule.companyId, null, 1);
-
 
     if (!schedule.mediaPath) {
       const messageData = {

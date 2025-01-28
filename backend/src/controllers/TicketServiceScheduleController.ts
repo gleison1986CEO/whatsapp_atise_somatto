@@ -21,6 +21,7 @@ import path from "path";
 import fs from "fs";
 import DeleteCardService from "../services/TicketServiceScheduleService/DeleteCardService";
 import DeleteTicketService from "../services/TicketServiceScheduleService/DeleteTicketService";
+import { logger } from "../utils/logger";
 
 type IndexQuery = {
   searchParam?: string;
@@ -185,17 +186,25 @@ export const mediaUpload = async (
   res: Response
 ): Promise<Response> => {
   const { id } = req.params;
+  const { isCsv } = req.body;
   const files = req.files as Express.Multer.File[];
   const file = head(files);
 
   try {
     const announcement = await ScheduleService.findByPk(id);
 
-    await announcement.update({
-      mediaPath: file.filename,
-      mediaName: file.originalname
-    });
-    await announcement.reload();
+    if (isCsv) {
+      await announcement.update({
+        CsvUrl: file.path
+      });
+      await announcement.reload();
+    } else {
+      await announcement.update({
+        mediaPath: file.filename,
+        mediaName: file.originalname
+      });
+      await announcement.reload();
+    }
 
     const io = getIO();
     io.emit(`schedule`, {
