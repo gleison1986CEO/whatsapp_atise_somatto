@@ -4,7 +4,6 @@
 - 209.38.150.38  = atendimento
 - 64.23.235.27   = sac
 - 64.23.133.38   = prospeccao
-- 167.99.225.124 = WITTADV
 ---
 ## DOWNLOAD INSTALL
 - https://github.com/gleison1986CEO/install_sh.git
