@@ -235,11 +235,7 @@ const pipelineAsync = util.promisify(pipeline);
 
 async function processCSV(schedule, whatsapp) {
 
-  logger.info("processCSV 888")
-
   if (!schedule.CsvUrl) return;
-
-  logger.info("processCSV 999")
 
   const tasks = [];
 
@@ -247,7 +243,7 @@ async function processCSV(schedule, whatsapp) {
     fs.createReadStream(schedule.CsvUrl),
     csvParser({
       separator: ';',
-      headers: ['name', 'number', 'message'],
+      headers: ['name', 'number'],
       skipLines: 1,
     }),
     async function* (source) {
@@ -256,7 +252,7 @@ async function processCSV(schedule, whatsapp) {
           const task = (async () => {
             await SendMessage(whatsapp, {
               number: "55" + data.number,
-              body: data.message
+              body: schedule.body
             });
             await createNewTicketFromServices("55" + data.number, schedule.companyId);
           })();
@@ -289,8 +285,6 @@ async function handleSendServiceScheduledMessage(job) {
   let scheduleRecord: ScheduleService | null = null;
 
   const whatsapp = await GetDefaultWhatsApp(schedule.companyId);
-
-  logger.info(`SCHEDULE DATA: ${schedule}`)
 
   if (schedule.contact == null && schedule.CsvUrl) {
     await processCSV(schedule, whatsapp);

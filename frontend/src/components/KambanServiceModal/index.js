@@ -97,6 +97,8 @@ const KambamServiceModal = ({ open, onClose, scheduleId, contactId, cleanContact
 	const [contacts, setContacts] = useState([initialContact]);
 	const [filterName, setFilterName] = useState([initialFilter]);
 	const [attachment, setAttachment] = useState(null);
+	const [enableCsv, setEnableCsv] = useState(true);
+	const [enableContact, setEnableContact] = useState(true);
 	const [attachmentCsv, setAttachmentCsv] = useState(null);
 	const attachmentFile = useRef(null);
 	const attachmentFileCsv = useRef(null);
@@ -286,25 +288,28 @@ const KambamServiceModal = ({ open, onClose, scheduleId, contactId, cleanContact
 									>
 										<Autocomplete
 											fullWidth
+											style={{ display: enableContact ? "" : "none" }}
 											value={currentContact}
 											options={contacts}
 											onChange={(e, contact) => {
 												const contactId = contact ? contact.id : '';
 												const contactName = contact ? contact.name : '';
+												setEnableCsv(!enableCsv)
 												setSchedule({ ...schedule, contactId, hinovaContactName: contactName });
 												setCurrentContact(contact ? contact : initialContact);
 											}}
 											getOptionLabel={(option) => option.name}
-											// getOptionSelected={(option, value) => {
-											// 	return value.id === option.id
-											// }}
 											renderInput={(params) => <TextField {...params} variant="outlined"
 												placeholder="Contato" />}
 										/>
 										<Button
-											style={{ marginTop: 15 }}
+											style={{ marginTop: 15, display: enableCsv ? "" : "none" }}
+											visi
 											color="primary"
-											onClick={() => attachmentFileCsv.current.click()}
+											onClick={() => {
+												setEnableContact(!enableContact)
+												attachmentFileCsv.current.click()
+											}}
 											disabled={isSubmitting}
 											variant="outlined"
 										>
