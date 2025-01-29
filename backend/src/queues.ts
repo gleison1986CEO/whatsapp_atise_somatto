@@ -31,6 +31,9 @@ import CreateOrUpdateContactService from "./services/ContactServices/CreateOrUpd
 import GetProfilePicUrl from "./services/WbotServices/GetProfilePicUrl";
 import CreateMessageService from "./services/MessageServices/CreateMessageService";
 import csvParser from "csv-parser";
+const util = require('util');
+const { pipeline } = require('stream');
+
 import fs from 'fs';
 
 const nodemailer = require('nodemailer');
@@ -227,6 +230,54 @@ function generateCode() {
   return code;
 }
 
+const pipelineAsync = util.promisify(pipeline);
+
+
+async function processCSV(schedule, whatsapp) {
+
+  logger.info("processCSV 888")
+
+  if (!schedule.CsvUrl) return;
+
+  logger.info("processCSV 999")
+
+  const tasks = [];
+
+  await pipelineAsync(
+    fs.createReadStream(schedule.CsvUrl),
+    csvParser({
+      separator: ';',
+      headers: ['name', 'number', 'message'],
+      skipLines: 1,
+    }),
+    async function* (source) {
+      for await (const data of source) {
+        if (data.number !== "") {
+          const task = (async () => {
+            await SendMessage(whatsapp, {
+              number: "55" + data.number,
+              body: data.message
+            });
+            await createNewTicketFromServices("55" + data.number, schedule.companyId);
+          })();
+
+          tasks.push(task);
+
+          // Processa em lotes de 10 registros para evitar timeout
+          if (tasks.length >= 10) {
+            await Promise.all(tasks);
+            tasks.length = 0; // Esvazia o array após concluir
+          }
+        }
+      }
+    }
+  );
+
+  // Aguarda qualquer promessa restante antes de finalizar
+  if (tasks.length > 0) {
+    await Promise.all(tasks);
+  }
+}
 
 async function handleSendServiceScheduledMessage(job) {
 
@@ -239,40 +290,13 @@ async function handleSendServiceScheduledMessage(job) {
 
   const whatsapp = await GetDefaultWhatsApp(schedule.companyId);
 
+  logger.info(`SCHEDULE DATA: ${schedule}`)
 
   if (schedule.contact == null && schedule.CsvUrl) {
-    fs.createReadStream(schedule.CsvUrl)
-      .pipe(csvParser({
-        separator: ';',
-        headers: ['name', 'number', 'message'],
-        skipLines: 1,
-      }))
-      .on('data', async (data) => {
-        if (data.number != "") {
-          await SendMessage(whatsapp, {
-            number: "55" + data.number,
-            body: data.message
-          });
-        }
-      })
+    await processCSV(schedule, whatsapp);
     return
   } else if (schedule.CsvUrl) {
-    fs.createReadStream(schedule.CsvUrl)
-      .pipe(csvParser({
-        separator: ';',
-        headers: ['name', 'number', 'message'],
-        skipLines: 1,
-      }))
-      .on('data', async (data) => {
-        if (data.number != "") {
-          await SendMessage(whatsapp, {
-            number: "55" + data.number,
-            body: data.message
-          });
-        }
-      })
-      .on('end', () => {
-      });
+    await processCSV(schedule, whatsapp);
   }
 
   const hinovaUserData = await hinovaService.associateDataFromBackEnd(schedule.contactId)
@@ -389,6 +413,28 @@ async function handleSendServiceScheduledMessage(job) {
     logger.error("SendScheduledMessage -> SendMessage: error", e.message);
     throw e;
   }
+}
+
+async function createNewTicketFromServices(phoneNumber, companyId) {
+  logger.info("CREATE NEW TICKET 771")
+  const whatsapp = await GetDefaultWhatsApp(companyId);
+
+  const profilePicUrl = await GetProfilePicUrl(
+    phoneNumber,
+    companyId
+  );
+
+  const contactData = {
+    name: `${phoneNumber}`,
+    number: phoneNumber,
+    profilePicUrl,
+    isGroup: false,
+    companyId: companyId
+  };
+
+  const contact = await CreateOrUpdateContactService(contactData);
+
+  await FindOrCreateTicketService(contact, whatsapp.id!, 0, companyId, null, 1);
 }
 
 async function handleVerifyCampaigns(job) {
