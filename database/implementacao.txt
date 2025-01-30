@@ -1,3 +1,6 @@
+### BACKEND
+
+NODE_ENV=
 BACKEND_URL=https://implementacaoapi.atise.com.br
 FRONTEND_URL=https://implementacao.atise.com.br
 PROXY_PORT=443
@@ -21,8 +24,18 @@ USER_LIMIT=10000
 CONNECTIONS_LIMIT=10000
 CLOSED_SEND_BY_ME=true
 
-HINOVA_USER=test
-HINOVA_PASS=test
-TEST_HINOVA=true
+HINOVA_USER=gilberto
+HINOVA_PASS=870178
+TEST_HINOVA=false
 PHONE_TEST_HINOVA=
 HINOVA_API_URL=https://api.hinova.com.br/api/sga/v2
+
+
+
+### FRONTEND
+
+REACT_APP_BACKEND_URL=https://implementacaoapi.atise.com.br
+REACT_APP_HOURS_CLOSE_TICKETS_AUTO = 24        
+
+
+### DATABASE psql -h localhost -d implementacao -U implementacao -p 5432
