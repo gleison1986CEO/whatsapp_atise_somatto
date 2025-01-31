@@ -180,6 +180,20 @@ const KambamServiceModal = ({ open, onClose, scheduleId, contactId, cleanContact
 
 		try {
 			if (scheduleId) {
+				if (attachmentCsv != null && scheduleData.contactId == "") {
+					scheduleData.contactId = 0
+				}
+				if (attachmentCsv != null && scheduleData.contactId == "") {
+					console.log("PASS CSV");
+					const formData = new FormData();
+					formData.append("file", attachmentCsv);
+					formData.append("isCsv", true);
+					await api.post(`/ticket_service_schedules/${scheduleId}/media-upload`, formData);
+				} else {
+					scheduleData.CsvUrl = null
+					await api.put(`/ticket_service_schedules/${scheduleId}`, scheduleData);
+				}
+
 				await api.put(`/ticket_service_schedules/${scheduleId}`, scheduleData);
 				if (attachment != null) {
 					const formData = new FormData();

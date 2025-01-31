@@ -329,7 +329,7 @@ const ServiceShedulesManager = () => {
                   </TableCell>
 
                   <TableCell align="center">
-                    {schedule?.contact?.name} {schedule?.hinovaContactName}
+                    {schedule?.contact?.name} {schedule?.hinovaContactName} {schedule.CsvUrl ? "CSV/XLS" : ""}
                   </TableCell>
 
                   <TableCell align="center" title={schedule.body}>

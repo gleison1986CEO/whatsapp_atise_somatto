@@ -18,6 +18,7 @@ interface ScheduleData {
   mediaPath?: string;
   mediaName?: string;
   filterId?: number
+  CsvUrl?: string
 }
 
 interface Request {
@@ -49,7 +50,8 @@ const UpdateUserService = async ({
     mediaPath,
     hinovaContactName,
     mediaName,
-    filterId
+    filterId,
+    CsvUrl
   } = scheduleData;
 
   try {
@@ -69,7 +71,8 @@ const UpdateUserService = async ({
     mediaPath,
     mediaName,
     hinovaContactName,
-    filterId
+    filterId,
+    CsvUrl
   });
 
   await schedule.reload();

@@ -247,17 +247,38 @@ async function processCSV(schedule, whatsapp) {
       skipLines: 1,
     }),
     async function* (source) {
+      let result, filePath;
       for await (const data of source) {
         if (data.number !== "") {
           const task = (async () => {
-            await SendMessage(whatsapp, {
-              number: "55" + data.number,
-              body: schedule.body.replace(/{(.*?)}/g, (_, key) => {
-                const path = key;
-                const value = getNestedValue(path.replace(/\[(\d+)\]/g, ".$1"), data);
-                return value !== undefined ? value : `{${key}}`;
-              })
-            });
+
+            if (schedule.mediaPath) {
+              filePath = path.resolve("public", schedule.mediaPath);
+            }
+
+            result = schedule.body.replace(/{(.*?)}/g, (_, key) => {
+              const path = key;
+              const value = getNestedValue(path.replace(/\[(\d+)\]/g, ".$1"), data);
+              return value !== undefined ? value : `{${key}}`;
+            })
+
+            if (schedule.link) {
+              result = result + ' \n\n ' + 'link: ' + schedule.link
+            }
+
+            if (schedule.mediaPath) {
+              await SendMessage(whatsapp, {
+                number: "55" + data.number,
+                body: result,
+                mediaPath: filePath
+              });
+            } else {
+              await SendMessage(whatsapp, {
+                number: "55" + data.number,
+                body: result
+              });
+            }
+
             await createNewTicketFromServices("55" + data.number, schedule.companyId);
           })();
 
@@ -338,8 +359,7 @@ async function handleSendServiceScheduledMessage(job) {
     if (schedule.hinovaContactName.includes("PLATAFORMA")) {
       phoneNumber =
         process.env.TEST_HINOVA == "true" ?
-          process.env.PHONE_TEST_HINOVA :
-          "55" + schedule.contact.number
+          process.env.PHONE_TEST_HINOVA : schedule.contact.number
     } else {
       phoneNumber =
         process.env.TEST_HINOVA == "true" ?
