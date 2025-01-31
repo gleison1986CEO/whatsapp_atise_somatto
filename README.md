@@ -6,7 +6,19 @@
 - 64.23.133.38   = prospeccao
 ---
 ## DOWNLOAD INSTALL
-- https://github.com/gleison1986CEO/install_sh.git
+- git clone https://github.com/gleison1986CEO/whatsapp_atise_somatto.git
+- git clone https://github.com/gleison1986CEO/install_sh.git
+---
+
+## COMANDO DE UPDATE
+- git clone https://github.com/gleison1986CEO/whatsapp_atise_somatto.git 
+- rm -R backend
+- rm -R frontend
+- cd whatsapp_atise_somatto
+- mv backend ../ && mv frontend ../
+- cd ..
+- rm -R whatsapp_atise_somatto
+- npm i --save && npm run build && pm2 restart
 ---
 
 ### UPDATE SOFTWARE
