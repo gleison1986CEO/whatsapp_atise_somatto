@@ -243,7 +243,7 @@ async function processCSV(schedule, whatsapp) {
     fs.createReadStream(schedule.CsvUrl),
     csvParser({
       separator: ';',
-      headers: ['name', 'number'],
+      headers: ['name', 'number', 'modelo', 'placa', 'endereco'],
       skipLines: 1,
     }),
     async function* (source) {
@@ -252,7 +252,11 @@ async function processCSV(schedule, whatsapp) {
           const task = (async () => {
             await SendMessage(whatsapp, {
               number: "55" + data.number,
-              body: schedule.body
+              body: schedule.body.replace(/{(.*?)}/g, (_, key) => {
+                const path = key;
+                const value = getNestedValue(path.replace(/\[(\d+)\]/g, ".$1"), data);
+                return value !== undefined ? value : `{${key}}`;
+              })
             });
             await createNewTicketFromServices("55" + data.number, schedule.companyId);
           })();

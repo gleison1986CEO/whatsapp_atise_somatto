@@ -75,7 +75,7 @@ const wbotMonitor = async (
           const messageData = {
             id: content.attrs["call-id"],
             ticketId: ticket.id,
-            contactId: contact.id,
+            contactId: contact?.id,
             body,
             fromMe: false,
             mediaType: "call_log",
@@ -87,9 +87,9 @@ const wbotMonitor = async (
           await ticket.update({
             lastMessage: body,
           });
-          
 
-          if(ticket.status === "closed") {
+
+          if (ticket.status === "closed") {
             await ticket.update({
               status: "pending",
             });
