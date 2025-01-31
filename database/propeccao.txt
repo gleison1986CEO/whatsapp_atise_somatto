@@ -1,0 +1,42 @@
+### BACKEND
+
+
+NODE_ENV=
+BACKEND_URL=https://apiprospec.somatto.org.br
+FRONTEND_URL=https://prospeccao.somatto.org.br
+PROXY_PORT=443
+PORT=4000
+
+DB_HOST=localhost
+DB_DIALECT=postgres
+DB_PORT=5432
+DB_USER=gleisonsilveira
+DB_PASS=0908Gle@gle28poker
+DB_NAME=prospccaoempresasomatto12345678900
+
+JWT_SECRET=uwKLg85SMQwdg+TIMzeCNpUimUGYNwOleQfAIcIBfpc=
+JWT_REFRESH_SECRET=XrYkn6jT5HZyjcqoBg+VGT+2tLTOd+LP4GRjWysFs0Q=
+
+REDIS_URI=redis://0908Gle@gle28poker@127.0.0.1:6379
+REDIS_OPT_LIMITER_MAX=1
+REGIS_OPT_LIMITER_DURATION=3000
+
+
+HINOVA_USER=gilberto
+HINOVA_PASS=870178
+TEST_HINOVA=false
+PHONE_TEST_HINOVA=
+HINOVA_API_URL=https://api.hinova.com.br/api/sga/v2
+
+
+
+
+### FRONTEND
+
+REACT_APP_BACKEND_URL=https://apiprospec.somatto.org.br
+REACT_APP_HOURS_CLOSE_TICKETS_AUTO = 24    
+
+
+### DATABASE 
+
+psql -h localhost -d prospccaoempresasomatto12345678900 -U gleisonsilveira -p 5432

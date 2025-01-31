@@ -20,9 +20,10 @@
 - npm run build
 - npx sequelize db:migrate
 - npx sequelize db:seed:all
-- ALTER TABLE public."ScheduleServices" DROP CONSTRAINT "ScheduleServices_contactId_fkey"; // ALTERAÇÕES PARA HINOVA
-- ALTER TABLE "TicketScheduleServices" ADD "hinovaContactName" VARCHAR(255); 
 - psql -h localhost -d witt_adv -U witt -p 5432
+- ALTER TABLE "ScheduleServices" DROP CONSTRAINT "ScheduleServices_contactId_fkey"; // ALTERAÇÕES PARA HINOVA
+- ALTER TABLE "ScheduleServices" ADD "hinovaContactName" VARCHAR(255);
+- ALTER TABLE "TicketScheduleServices" ADD "hinovaContactName" VARCHAR(255);
 ---
 ## FRONTEND
 - npm install
