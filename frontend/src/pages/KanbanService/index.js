@@ -174,9 +174,9 @@ const KanbanService = () => {
                 LINK: {ticket.link}
               </p>
 
-              <center><button className={classes.button3} style={{ backgroundColor: "green", width: "100%", maxWidth: "300px", margin: "0 auto" }} onClick={() => handleCardClickSend(ticket.id)}>Encaminhar Serviço</button></center>
-              <center><button className={classes.button2} style={{ marginRight: '10px', width: "100%", maxWidth: "300px", margin: "0 auto", marginTop: "10px" }} onClick={() => handleCardEditClick(ticket.id)}>Atualizar Serviço</button></center>
-              <center><button className={classes.button3} style={{ marginRight: '10px', width: "100%", maxWidth: "300px", margin: "0 auto", marginTop: "10px" }} onClick={() => handleCardClick(ticket.id)}>Deletar Serviço</button></center>
+              <center><button className={classes.button3} style={{ backgroundColor: "green", width: "100%", maxWidth: "300px", margin: "0 auto" }} onClick={() => handleCardClickSend(ticket.id)}>ENVIAR</button></center>
+              <center><button className={classes.button2} style={{ marginRight: '10px', width: "100%", maxWidth: "300px", margin: "0 auto", marginTop: "10px" }} onClick={() => handleCardEditClick(ticket.id)}>ATUALIZAR</button></center>
+              <center><button className={classes.button3} style={{ marginRight: '10px', width: "100%", maxWidth: "300px", margin: "0 auto", marginTop: "10px" }} onClick={() => handleCardClick(ticket.id)}>DELETAR</button></center>
 
             </div>
           )

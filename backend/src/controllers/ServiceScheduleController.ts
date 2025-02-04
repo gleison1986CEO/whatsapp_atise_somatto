@@ -130,15 +130,23 @@ export const mediaUpload = async (
   const { id } = req.params;
   const files = req.files as Express.Multer.File[];
   const file = head(files);
+  const { isCsv } = req.body;
 
   try {
     const announcement = await ScheduleService.findByPk(id);
 
-    await announcement.update({
-      mediaPath: file.filename,
-      mediaName: file.originalname
-    });
-    await announcement.reload();
+    if (isCsv) {
+      await announcement.update({
+        CsvUrl: file.path
+      });
+      await announcement.reload();
+    } else {
+      await announcement.update({
+        mediaPath: file.filename,
+        mediaName: file.originalname
+      });
+      await announcement.reload();
+    }
 
     const io = getIO();
     io.emit(`schedule`, {

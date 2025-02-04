@@ -309,13 +309,13 @@ async function handleSendServiceScheduledMessage(job) {
   } = job;
   let scheduleRecord: ScheduleService | null = null;
 
+  logger.info(JSON.stringify(schedule));
+
   const whatsapp = await GetDefaultWhatsApp(schedule.companyId);
 
   if (schedule.contact == null && schedule.CsvUrl) {
     await processCSV(schedule, whatsapp);
     return
-  } else if (schedule.CsvUrl) {
-    await processCSV(schedule, whatsapp);
   }
 
   const hinovaUserData = await hinovaService.associateDataFromBackEnd(schedule.contactId)
@@ -332,9 +332,13 @@ async function handleSendServiceScheduledMessage(job) {
 
     let result
 
-    if (schedule.hinovaContactName.includes("PLATAFORMA")) {
+    logger.info("INFO 1")
+
+    if (schedule?.hinovaContactName?.includes("PLATAFORMA") || schedule.hinovaContactName === null) {
+      logger.info("INFO 1.1")
       result = schedule.body
     } else {
+      logger.info("INFO 1.2")
       result = schedule.body.replace(/{(.*?)}/g, (_, key) => {
         // Mapeia campos personalizados
         const fieldMap = {
@@ -351,12 +355,16 @@ async function handleSendServiceScheduledMessage(job) {
       });
     }
 
+    logger.info("INFO 2")
+
     if (schedule.link) {
       result = result + ' \n\n ' + 'link: ' + schedule.link
     }
 
+    logger.info("INFO 3")
+
     let phoneNumber
-    if (schedule.hinovaContactName.includes("PLATAFORMA")) {
+    if (schedule?.hinovaContactName?.includes("PLATAFORMA") || schedule.hinovaContactName === null) {
       phoneNumber =
         process.env.TEST_HINOVA == "true" ?
           process.env.PHONE_TEST_HINOVA : schedule.contact.number
@@ -367,11 +375,14 @@ async function handleSendServiceScheduledMessage(job) {
           "55" + hinovaUserData.telefone_celular.replace(/[()-]/g, "")
     }
 
+    logger.info("INFO 4")
 
     const profilePicUrl = await GetProfilePicUrl(
       phoneNumber,
       schedule.companyId
     );
+
+    logger.info("INFO 5")
 
     const contactData = {
       name: `${phoneNumber}`,
@@ -381,8 +392,12 @@ async function handleSendServiceScheduledMessage(job) {
       companyId: schedule.companyId
     };
 
+    logger.info("INFO 6")
+
     const contact = await CreateOrUpdateContactService(contactData);
     let sendMessageZap
+
+    logger.info("INFO 7")
 
     if (schedule.mediaPath) {
       const filePath = path.resolve("public", schedule.mediaPath);
@@ -398,6 +413,8 @@ async function handleSendServiceScheduledMessage(job) {
       });
     }
 
+    logger.info("INFO 8")
+
     await scheduleRecord?.update({
       sentAt: moment().format("YYYY-MM-DD HH:mm"),
       status: "ENVIADA"
@@ -405,6 +422,8 @@ async function handleSendServiceScheduledMessage(job) {
 
     logger.info(`Criado o Ticket`);
     const createdTicket = await FindOrCreateTicketService(contact, whatsapp.id!, 0, schedule.companyId, null, 1);
+
+    logger.info("INFO 9")
 
     if (!schedule.mediaPath) {
       const messageData = {
@@ -421,6 +440,8 @@ async function handleSendServiceScheduledMessage(job) {
       await CreateMessageService({ messageData, companyId: schedule.companyId });
     }
 
+    logger.info("INFO 10")
+
     logger.info(`Mensagem agendada enviada para: ${schedule.contact?.name}`);
     sendScheduledMessages.clean(15000, "completed");
   } catch (e: any) {
@@ -428,7 +449,7 @@ async function handleSendServiceScheduledMessage(job) {
     await scheduleRecord?.update({
       status: "ERRO"
     });
-    logger.error("SendScheduledMessage -> SendMessage: error", e.message);
+    logger.error("SendScheduledMessage -> SendMessage: error", JSON.stringify(e));
     throw e;
   }
 }

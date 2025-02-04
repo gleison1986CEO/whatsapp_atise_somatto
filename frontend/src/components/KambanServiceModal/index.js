@@ -76,7 +76,7 @@ const KambamServiceModal = ({ open, onClose, scheduleId, contactId, cleanContact
 
 	const initialState = {
 		body: "",
-		contactId: "",
+		contactId: 0,
 		sendAt: moment().add(1, 'hour').format('YYYY-MM-DDTHH:mm'),
 		sentAt: "",
 	};
@@ -300,7 +300,7 @@ const KambamServiceModal = ({ open, onClose, scheduleId, contactId, cleanContact
 										variant="outlined"
 										fullWidth
 									>
-										<Autocomplete
+										{/* <Autocomplete
 											fullWidth
 											style={{ display: enableContact ? "" : "none" }}
 											value={currentContact}
@@ -315,8 +315,8 @@ const KambamServiceModal = ({ open, onClose, scheduleId, contactId, cleanContact
 											getOptionLabel={(option) => option.name}
 											renderInput={(params) => <TextField {...params} variant="outlined"
 												placeholder="Contato" />}
-										/>
-										<Button
+										/> */}
+										{/* <Button
 											style={{ marginTop: 15, display: enableCsv ? "" : "none" }}
 											visi
 											color="primary"
@@ -328,7 +328,7 @@ const KambamServiceModal = ({ open, onClose, scheduleId, contactId, cleanContact
 											variant="outlined"
 										>
 											CONTATOS CSV
-										</Button>
+										</Button> */}
 									</FormControl>
 								</div>
 								<br />

@@ -75,6 +75,8 @@ const ScheduleModal = ({ open, onClose, scheduleId, contactId, cleanContact, rel
 	const classes = useStyles();
 	const history = useHistory();
 	const { user } = useContext(AuthContext);
+	const [enableContact, setEnableContact] = useState(true);
+	const [enableCsv, setEnableCsv] = useState(true);
 
 	const initialState = {
 		body: "",
@@ -93,7 +95,9 @@ const ScheduleModal = ({ open, onClose, scheduleId, contactId, cleanContact, rel
 	const [currentContact, setCurrentContact] = useState(initialContact);
 	const [contacts, setContacts] = useState([initialContact]);
 	const [attachment, setAttachment] = useState(null);
+	const [attachmentCsv, setAttachmentCsv] = useState(null);
 	const attachmentFile = useRef(null);
+	const attachmentFileCsv = useRef(null);
 
 	useEffect(() => {
 		if (contactId && contacts.length) {
@@ -189,6 +193,16 @@ const ScheduleModal = ({ open, onClose, scheduleId, contactId, cleanContact, rel
 					await api.post(`/service_schedules/${data.id}/media-upload`, formData);
 				}
 			}
+
+			if (attachmentCsv != null && scheduleData.contactId == "") {
+				console.log("PASS CSV");
+				console.log(attachmentCsv);
+				const formData = new FormData();
+				formData.append("file", attachmentCsv);
+				formData.append("isCsv", true);
+				await api.post(`/service_schedules/${scheduleId}/media-upload`, formData);
+			}
+
 			toast.success(i18n.t("scheduleModal.success"));
 			if (typeof reload == 'function') {
 				history.push({ pathname: '/service_schedules', state: { id: null } });
@@ -208,6 +222,13 @@ const ScheduleModal = ({ open, onClose, scheduleId, contactId, cleanContact, rel
 		setCurrentContact(initialContact);
 		setSchedule(initialState);
 		handleClose();
+	};
+
+	const handleAttachmentFileCSV = (e) => {
+		const file = head(e.target.files);
+		if (file) {
+			setAttachmentCsv(file);
+		}
 	};
 
 	const deleteMedia = async () => {
@@ -271,6 +292,34 @@ const ScheduleModal = ({ open, onClose, scheduleId, contactId, cleanContact, rel
 									>
 										<Autocomplete
 											fullWidth
+											style={{ display: enableContact ? "" : "none" }}
+											value={currentContact}
+											options={contacts}
+											onChange={(e, contact) => {
+												const contactId = contact ? contact.id : '';
+												const contactName = contact ? contact.name : '';
+												setEnableCsv(!enableCsv)
+												setSchedule({ ...schedule, contactId, hinovaContactName: contactName });
+												setCurrentContact(contact ? contact : initialContact);
+											}}
+											getOptionLabel={(option) => option.name}
+											renderInput={(params) => <TextField {...params} variant="outlined"
+												placeholder="Contato" />}
+										/>
+										<Button
+											style={{ marginTop: 15, display: enableCsv ? "" : "none" }}
+											color="primary"
+											onClick={() => {
+												setEnableContact(!enableContact)
+												attachmentFileCsv.current.click()
+											}}
+											disabled={isSubmitting}
+											variant="outlined"
+										>
+											CONTATOS CSV
+										</Button>
+										<Autocomplete
+											fullWidth
 											style={{ display: "none" }}
 											value={currentContact}
 											options={contacts}
@@ -286,6 +335,14 @@ const ScheduleModal = ({ open, onClose, scheduleId, contactId, cleanContact, rel
 											renderInput={(params) => <TextField {...params} variant="outlined"
 												placeholder="Contato" />}
 										/>
+										<div style={{ display: "none" }}>
+											<input
+												type="file"
+												accept=".csv"
+												ref={attachmentFileCsv}
+												onChange={(e) => handleAttachmentFileCSV(e)}
+											/>
+										</div>
 									</FormControl>
 								</div>
 								<br />
