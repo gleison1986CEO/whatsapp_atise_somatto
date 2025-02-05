@@ -12,13 +12,12 @@
 
 ## COMANDO DE UPDATE
 - git clone https://github.com/gleison1986CEO/whatsapp_atise_somatto.git 
-- rm -R backend
-- rm -R frontend
+- rm -R backend && rm -R frontend
 - cd whatsapp_atise_somatto
 - mv backend ../ && mv frontend ../
 - cd ..
 - rm -R whatsapp_atise_somatto
-- npm i --save && npm run build && pm2 restart
+- npm i --save && npm run build && pm2 restart all
 ---
 
 ### UPDATE SOFTWARE
