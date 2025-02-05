@@ -48,3 +48,15 @@ Somatto Associação de Benefícios Mútuos.
 
 👆🏼Nessa parte do texto acima irá fazer a contagem regressiva de dias de acordo com o intervalo de mensagem: Primeiro contato foi feito na data xx/xx/20xx, então restam xx dias para que o veículo fique descoberto contra roubo e furto.
 Então se for a cada sete dias irá diminuir 7 dias do tempo em negrito
+
+
+
+
+
+1 - AJUSTAR SELECIONAR CONTATOS PARA TER OPCAO DE SELECIONAR MASID E UM CONTATO
+2 - AJUSTAR LAYOUT E METODOS PARA MELHOR PERFORMANCE DO SISTEMA E ENTENDIMENTO DOS USUARIOS TIPO (POPUP INFORMATIVO AO CLICAR E ETC)
+3 - AO ENVIAR KANBAM, CAIR NA OPÇÃO JA SELECIONADA DO SERVIÇO (FILA)  (ESSE DETALHE NAO FOI PEDIDO MAIS VOU AJUSTAR)
+4 - NAS OPÇÕES DE "ENVIOS DO KAMBAM" - TER A OPÇÃO DE ENVIAR ENTRE INRERVALOS DE DIAS xxxxx OU A CADA xxxxxx DIAS E ENTRE TAIS HORAS xxxxxxx
+5 - PROGRAMAÇÃO DE ENVIO DE MENSAGEM ENTRE DATAS E HORARIOS COM CONTAGEM REFRESSIVA, ESSA MENSAGEM ELA FOCA SENDO ENVIADA CONSTANTEMENTE DE ACORDO COM A PROGRAMACAO INICIADA.
+
+6 - ocultar aba agendamento
