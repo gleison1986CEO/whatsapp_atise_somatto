@@ -59,5 +59,35 @@ Então se for a cada sete dias irá diminuir 7 dias do tempo em negrito
 4 - NAS OPÇÕES DE "ENVIOS DO KAMBAM" - TER A OPÇÃO DE ENVIAR ENTRE INRERVALOS DE DIAS xxxxx OU A CADA xxxxxx DIAS E ENTRE TAIS HORAS xxxxxxx
 5 - PROGRAMAÇÃO DE ENVIO DE MENSAGEM ENTRE DATAS E HORARIOS COM CONTAGEM REFRESSIVA, ESSA MENSAGEM ELA FOCA SENDO ENVIADA CONSTANTEMENTE DE ACORDO COM A PROGRAMACAO INICIADA.
 6 - SOMATTO : VERIFICAR API DA HINOVA QUANDO EXISTEM MAIS DE 2 VEICULOS POR CPF
-7 - SOMATTO : DESENVOLVER FILTRO MAIS APRIMORADO NO DASHBOARD PARA HISTORICOS DE ,quantos atendimento foi feito por usuarios e melhorias no historico"
-8 - ocultar aba agendamento
+6.1 - SGA 
+
+""""""""""""""""'
+Relatório>
+11.2 de veículos >
+Selecionada Data do cadastro ( colocar período)
+>Regional do veículo>Cooperativa do veículo
+ ( seleciona cooperativas) 
+
+Ordenações 
+1- Data contrato 
+2-Associado
+3-Cooperativa
+Obs.: distinção da seleção de banco de dados da Informação: 
+* contatos salvos no ChatBot 
+* ⁠contatos importados do SGA 
+* ⁠contatos importados CSV
+
+""""""""""""""""'
+7  - TODO ASSOCIADO QUE TIVER MAIS DE UMA PLACA PRECISA TER FILTRO DOS VEICULOS
+8  - DESIGN, LOGO E TEXTOS SOBRE O CHATBOT
+9  - SOMATTO : DESENVOLVER FILTRO MAIS APRIMORADO E AVANÇADO NO DASHBOARD, PARA HISTORICOS DE "quantos atendimento foi feito por usuarios e melhorias no historico"
+10 - QUANDO USUARIO TEM VARIAS PLACAS RESOLVER
+11 - OCULTAR AGENDAMENTO
+12 - TAGS DO SGA, ADCIONA MESMOS CAMPOS AOS USUARIOS DA PLATAFORMA
+
+
+"Olá, Srª. {nome} 
+
+O motivo do meu contato é referente a INSTALAÇÃO do aparelho de rastreador no veículo de PLACA {veiculo_placa} ,  MODELO {veiculo_descricao_modelo}, CHASSI {veiculo_chassi}
+
+Me informe por gentileza um endereço completo, de preferência do senhor para verificarmos os dias disponíveis e agendarmos o procedimento."
