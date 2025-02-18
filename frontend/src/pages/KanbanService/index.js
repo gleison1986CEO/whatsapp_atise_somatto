@@ -159,13 +159,12 @@ const KanbanService = () => {
 
     const lanes = filteredTickets.map((filtered) => {
       return {
-        id: filtered.id,
+        id: String(filtered.id),
         title: filtered.filterName,
         cards: filtered.ticketScheduleService.map(ticket => ({
           title: "",
           id: ticket.id.toString(),
           description: (
-
             <div>
               <p>
                 TEXTO: {ticket.body}
@@ -177,7 +176,6 @@ const KanbanService = () => {
               <center><button className={classes.button} style={{ width: "100%", maxWidth: "300px", margin: "0 auto" }} onClick={() => handleCardClickSend(ticket.id)}>ENVIAR</button></center>
               <center><button className={classes.button2} style={{ marginRight: '10px', width: "100%", maxWidth: "300px", margin: "0 auto", marginTop: "10px" }} onClick={() => handleCardEditClick(ticket.id)}>ATUALIZAR</button></center>
               <center><button className={classes.button3} style={{ marginRight: '10px', width: "100%", maxWidth: "300px", margin: "0 auto", marginTop: "10px" }} onClick={() => handleCardClick(ticket.id)}>DELETAR</button></center>
-
             </div>
           )
         })),

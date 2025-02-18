@@ -39,7 +39,6 @@ module.exports = {
       },
       contactId: {
         type: DataTypes.INTEGER,
-        references: { model: "Contacts", key: "id" },
         onUpdate: "CASCADE",
         onDelete: "CASCADE",
         allowNull: true

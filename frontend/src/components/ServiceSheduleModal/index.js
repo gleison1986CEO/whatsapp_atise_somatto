@@ -7,6 +7,7 @@ import { useHistory } from "react-router-dom";
 
 import { makeStyles } from "@material-ui/core/styles";
 import { green } from "@material-ui/core/colors";
+import Chip from '@material-ui/core/Chip';
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
 import Input from '@material-ui/core/Input';
@@ -130,7 +131,7 @@ const ScheduleModal = ({ open, onClose, scheduleId, contactId, cleanContact, rel
 					setSchedule(prevState => {
 						return { ...prevState, ...data, sendAt: moment(data.sendAt).format('YYYY-MM-DDTHH:mm') };
 					});
-					setCurrentContact(data.contact);
+					//setCurrentContact(data.contact);
 				})()
 			} catch (err) {
 				toastError(err);
@@ -153,40 +154,36 @@ const ScheduleModal = ({ open, onClose, scheduleId, contactId, cleanContact, rel
 	};
 
 	const handleSaveSchedule = async values => {
+
 		const scheduleData = { ...values, userId: user.id };
 		const { name } = await api.get(`/hinova_desc_user/${scheduleData.contactId}`)
 		scheduleData.hinovaContactName = name
 
 		try {
 
-			const response = await api.post(`/service_schedules/validate`, {
-				createAt: scheduleData.sendAt
-			});
+			if (scheduleId && scheduleData.contacts != null) {
 
-			// TODO : Removido validação de horário de envio
-			// const { manha, tarde } = response.data.pop();
+				await api.delete(`/service_schedules/${scheduleId}`);
 
-			// if(parseInt(tarde) > 3) {
-			// 	toast.error(i18n.t("scheduleModal.err_tarde"));
-			// 	return;
-			// }
-			// if(parseInt(manha) > 2) {
-			// 	toast.error(i18n.t("scheduleModal.err_manha"));
-			// 	return;
-			// }
+				if (scheduleData.contacts.length > 0) {
+					scheduleData.contacts.forEach(async (contact) => {
+						const senderData = await api.post(`/service_schedules`, {
+							...scheduleData,
+							contactId: contact.id
+						});
 
-			if (scheduleId) {
-				await api.put(`/service_schedules/${scheduleId}`, scheduleData);
-				if (attachment != null) {
-					const formData = new FormData();
-					formData.append("file", attachment);
-					await api.post(
-						`/service_schedules/${scheduleId}/media-upload`,
-						formData
-					);
+						if (attachment != null) {
+							const formData = new FormData();
+							formData.append("file", attachment);
+							await api.post(
+								`/service_schedules/${senderData.id}/media-upload`,
+								formData
+							);
+						}
+					});
 				}
 			} else {
-				const { data } = await api.post("/service_schedules", scheduleData);
+				const { data } = await api.put(`/service_schedules/${scheduleId}`, scheduleData);
 				if (attachment != null) {
 					const formData = new FormData();
 					formData.append("file", attachment);
@@ -194,7 +191,7 @@ const ScheduleModal = ({ open, onClose, scheduleId, contactId, cleanContact, rel
 				}
 			}
 
-			if (attachmentCsv != null && scheduleData.contactId == "") {
+			if (attachmentCsv != null) {
 				console.log("PASS CSV");
 				console.log(attachmentCsv);
 				const formData = new FormData();
@@ -217,6 +214,8 @@ const ScheduleModal = ({ open, onClose, scheduleId, contactId, cleanContact, rel
 				}
 			}
 		} catch (err) {
+			console.log(err);
+
 			toastError(err);
 		}
 		setCurrentContact(initialContact);
@@ -292,20 +291,42 @@ const ScheduleModal = ({ open, onClose, scheduleId, contactId, cleanContact, rel
 									>
 										<Autocomplete
 											fullWidth
+											multiple
 											style={{ display: enableContact ? "" : "none" }}
-											value={currentContact}
 											options={contacts}
-											onChange={(e, contact) => {
-												const contactId = contact ? contact.id : '';
-												const contactName = contact ? contact.name : '';
-												setEnableCsv(!enableCsv)
-												setSchedule({ ...schedule, contactId, hinovaContactName: contactName });
-												setCurrentContact(contact ? contact : initialContact);
-											}}
 											getOptionLabel={(option) => option.name}
-											renderInput={(params) => <TextField {...params} variant="outlined"
-												placeholder="Contato" />}
+											// isOptionEqualToValue={(option, value) => option.id === value.id}
+											onChange={(e, selectedContacts) => {
+												setSchedule({
+													...schedule,
+													contacts: selectedContacts,
+												});
+												if (selectedContacts.length > 0) {
+													setCurrentContact(selectedContacts[selectedContacts.length - 1]);
+												} else {
+													setCurrentContact(initialContact);
+												}
+												setEnableCsv(!enableCsv);
+											}}
+											renderInput={(params) => (
+												<TextField {...params} variant="outlined" placeholder="Contato" />
+											)}
+											renderTags={(selected, getTagProps) =>
+												selected.map((option, index) => (
+													<Chip
+														{...getTagProps({ index })}
+														key={option.id}
+														label={option.name} // 👈 Aqui você exibe o `name` do objeto na tag
+														style={{
+															backgroundColor: 'green',
+															color: 'white',
+															fontWeight: 'bold',
+														}}
+													/>
+												))
+											}
 										/>
+
 										<Button
 											style={{ marginTop: 15, display: enableCsv ? "" : "none" }}
 											color="primary"
