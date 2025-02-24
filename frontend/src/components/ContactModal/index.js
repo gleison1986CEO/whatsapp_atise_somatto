@@ -184,6 +184,379 @@ const ContactModal = ({ open, onClose, contactId, initialValues, onSave }) => {
 										variant="outlined"
 									/>
 								</div>
+								<div>
+									<Field
+										as={TextField}
+										label="CPF"
+										name="cpf"
+										placeholder="CPF"
+										margin="dense"
+										variant="outlined"
+										className={classes.textField}
+									/>
+									<Field
+										as={TextField}
+										label="Data de Nascimento"
+										name="data_nascimento"
+										placeholder="CPF"
+										margin="dense"
+										variant="outlined"
+										className={classes.textField}
+									/>
+									<Field
+										as={TextField}
+										label="RG"
+										name="rg"
+										placeholder="RG"
+										margin="dense"
+										variant="outlined"
+										className={classes.textField}
+									/>
+									<Field
+										as={TextField}
+										label="CNH"
+										name="cnh"
+										placeholder="CNH"
+										margin="dense"
+										variant="outlined"
+										className={classes.textField}
+									/>
+									<Field
+										as={TextField}
+										label="Categoria CNH"
+										name="categoria_cnh"
+										placeholder="Categoria CNH"
+										margin="dense"
+										variant="outlined"
+										className={classes.textField}
+									/>
+								</div>
+								<div>
+									<Field
+										as={TextField}
+										label="Data Venc da CNH"
+										name="data_vencimento_habilitacao"
+										placeholder="Data Venc da CNH"
+										margin="dense"
+										variant="outlined"
+										className={classes.textField}
+									/>
+									<Field
+										as={TextField}
+										label="Telefone Celular"
+										name="telefone_celular"
+										placeholder="Telefone Celular"
+										margin="dense"
+										variant="outlined"
+										className={classes.textField}
+									/>
+									<Field
+										as={TextField}
+										label="CEP"
+										name="cep"
+										placeholder="CEP"
+										margin="dense"
+										variant="outlined"
+										className={classes.textField}
+									/>
+									<Field
+										as={TextField}
+										label="Logradouro"
+										name="logradouro"
+										placeholder="Logradouro"
+										margin="dense"
+										variant="outlined"
+										className={classes.textField}
+									/>
+									<Field
+										as={TextField}
+										label="Numero"
+										name="numero"
+										placeholder="Numero"
+										margin="dense"
+										variant="outlined"
+										className={classes.textField}
+									/>
+								</div>
+								<div>
+									<Field
+										as={TextField}
+										label="Complemento"
+										name="complemento"
+										placeholder="Complemento"
+										margin="dense"
+										variant="outlined"
+										className={classes.textField}
+									/>
+									<Field
+										as={TextField}
+										label="Bairro"
+										name="bairro"
+										placeholder="Bairro"
+										margin="dense"
+										variant="outlined"
+										className={classes.textField}
+									/>
+									<Field
+										as={TextField}
+										label="Cidade"
+										name="cidade"
+										placeholder="Cidade"
+										margin="dense"
+										variant="outlined"
+										className={classes.textField}
+									/>
+									<Field
+										as={TextField}
+										label="Estado"
+										name="estado"
+										placeholder="Estado"
+										margin="dense"
+										variant="outlined"
+										className={classes.textField}
+									/><Field
+										as={TextField}
+										label="SPC Serasa"
+										name="spcSerasa"
+										placeholder="SPC Serasa"
+										margin="dense"
+										variant="outlined"
+										className={classes.textField}
+									/>
+								</div>
+								<div>
+									<Field
+										as={TextField}
+										label="Tipo de Cobrança Recorrente"
+										name="descricao_tipo_cobranca_recorrente"
+										placeholder="Tipo de Cobrança Recorrente"
+										margin="dense"
+										fullWidth
+										variant="outlined"
+										className={classes.textField}
+									/>
+								</div>
+								<div>
+									<Field
+										as={TextField}
+										label="Placa 1"
+										name="veiculo_placa_1"
+										placeholder="Placa 1"
+										margin="dense"
+										variant="outlined"
+										className={classes.textField}
+									/><Field
+										as={TextField}
+										label="Placa 2"
+										name="veiculo_placa_2"
+										placeholder="Placa 2"
+										margin="dense"
+										variant="outlined"
+										className={classes.textField}
+									/><Field
+										as={TextField}
+										label="Placa 3"
+										name="veiculo_placa_3"
+										placeholder="Placa 3"
+										margin="dense"
+										variant="outlined"
+										className={classes.textField}
+									/><Field
+										as={TextField}
+										label="Placa 4"
+										name="veiculo_placa_4"
+										placeholder="Placa 4"
+										margin="dense"
+										variant="outlined"
+										className={classes.textField}
+									/><Field
+										as={TextField}
+										label="Placa 5"
+										name="veiculo_placa_5"
+										placeholder="Placa 5"
+										margin="dense"
+										variant="outlined"
+										className={classes.textField}
+									/>
+								</div>
+								<div>
+									<Field
+										as={TextField}
+										label="Placa 6"
+										name="veiculo_placa_6"
+										placeholder="Placa 6"
+										margin="dense"
+										variant="outlined"
+										className={classes.textField}
+									/>
+									<Field
+										as={TextField}
+										label="Chassi 1"
+										name="veiculo_chassi_1"
+										placeholder="Chassi 1"
+										margin="dense"
+										variant="outlined"
+										className={classes.textField}
+									/>
+									<Field
+										as={TextField}
+										label="Chassi 2"
+										name="veiculo_chassi_2"
+										placeholder="Chassi 2"
+										margin="dense"
+										variant="outlined"
+										className={classes.textField}
+									/>
+									<Field
+										as={TextField}
+										label="Chassi 3"
+										name="veiculo_chassi_3"
+										placeholder="Chassi 3"
+										margin="dense"
+										variant="outlined"
+										className={classes.textField}
+									/>
+									<Field
+										as={TextField}
+										label="Chassi 4"
+										name="veiculo_chassi_4"
+										placeholder="Chassi 4"
+										margin="dense"
+										variant="outlined"
+										className={classes.textField}
+									/>
+								</div>
+								<div>
+
+									<Field
+										as={TextField}
+										label="Chassi 5"
+										name="veiculo_chassi_5"
+										placeholder="Chassi 5"
+										margin="dense"
+										variant="outlined"
+										className={classes.textField}
+									/>
+									<Field
+										as={TextField}
+										label="Chassi 6"
+										name="veiculo_chassi_6"
+										placeholder="Chassi 6"
+										margin="dense"
+										variant="outlined"
+										className={classes.textField}
+									/>
+									<Field
+										as={TextField}
+										label="Fipe 1"
+										name="veiculo_fipe_1"
+										placeholder="Fipe 1"
+										margin="dense"
+										variant="outlined"
+										className={classes.textField}
+									/>
+									<Field
+										as={TextField}
+										label="Fipe 2"
+										name="veiculo_fipe_2"
+										placeholder="Fipe 2"
+										margin="dense"
+										variant="outlined"
+										className={classes.textField}
+									/>
+									<Field
+										as={TextField}
+										label="Fipe 3"
+										name="veiculo_fipe_3"
+										placeholder="Fipe 3"
+										margin="dense"
+										variant="outlined"
+										className={classes.textField}
+									/>
+								</div>
+								<div>
+									<Field
+										as={TextField}
+										label="Fipe 4"
+										name="veiculo_fipe_4"
+										placeholder="Fipe 4"
+										margin="dense"
+										variant="outlined"
+										className={classes.textField}
+									/>
+									<Field
+										as={TextField}
+										label="Fipe 5"
+										name="veiculo_fipe_5"
+										placeholder="Fipe 5"
+										margin="dense"
+										variant="outlined"
+										className={classes.textField}
+									/>
+									<Field
+										as={TextField}
+										label="Fipe 6"
+										name="veiculo_fipe_6"
+										placeholder="Fipe 6"
+										margin="dense"
+										variant="outlined"
+										className={classes.textField}
+									/>
+									<Field
+										as={TextField}
+										label="Descrição do Modelo 1"
+										name="veiculo_descricao_modelo_1"
+										placeholder="Descrição do Modelo 1"
+										margin="dense"
+										variant="outlined"
+										className={classes.textField}
+									/>
+									<Field
+										as={TextField}
+										label="Descrição do Modelo 2"
+										name="veiculo_descricao_modelo_2"
+										placeholder="Descrição do Modelo 2"
+										margin="dense"
+										variant="outlined"
+										className={classes.textField}
+									/>
+								</div>
+								<div>
+
+									<Field
+										as={TextField}
+										label="Descrição do Modelo 3"
+										name="veiculo_descricao_modelo_3"
+										placeholder="Descrição do Modelo 3"
+										margin="dense"
+										variant="outlined"
+										className={classes.textField}
+									/>									<Field
+										as={TextField}
+										label="Descrição do Modelo 4"
+										name="veiculo_descricao_modelo_4"
+										placeholder="Descrição do Modelo 4"
+										margin="dense"
+										variant="outlined"
+										className={classes.textField}
+									/>									<Field
+										as={TextField}
+										label="Descrição do Modelo 5"
+										name="veiculo_descricao_modelo_5"
+										placeholder="Descrição do Modelo 5"
+										margin="dense"
+										variant="outlined"
+										className={classes.textField}
+									/>									<Field
+										as={TextField}
+										label="Descrição do Modelo 6"
+										name="veiculo_descricao_modelo_6"
+										placeholder="Descrição do Modelo 6"
+										margin="dense"
+										variant="outlined"
+										className={classes.textField}
+									/>
+								</div>
 								<Typography
 									style={{ marginBottom: 8, marginTop: 12 }}
 									variant="subtitle1"

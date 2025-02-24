@@ -115,9 +115,13 @@ const ScheduleModal = ({ open, onClose, scheduleId, contactId, cleanContact, rel
 			try {
 				(async () => {
 					const { data: contactList } = await api.get('/contacts/list', { params: { companyId: companyId } });
-					let customList = contactList.map((c) => ({ id: c.id, name: c.name }));
-					if (isArray(customList)) {
-						setContacts([{ id: "", name: "" }, ...customList]);
+					let customList = contactList.map((c) => ({ id: c.id, name: c.name + " - PLATAFORMA" }));
+					const { data: contactListHinova } = await api.post('/hinova_users');
+					let customListHinova = contactListHinova.map((c) => ({ id: c.codigo_associado, name: c.nome + " - HINOVA" }));
+					let combinedList = [{ id: "", name: "" }, ...customList, ...customListHinova];
+					combinedList.sort((a, b) => a.name.localeCompare(b.name));
+					if (isArray(combinedList)) {
+						setContacts(combinedList);
 					}
 					if (contactId) {
 						setSchedule(prevState => {
