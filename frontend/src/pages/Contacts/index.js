@@ -37,7 +37,7 @@ import { Can } from "../../components/Can";
 import NewTicketModal from "../../components/NewTicketModal";
 import { socketConnection } from "../../services/socket";
 
-import {CSVLink} from "react-csv";
+import { CSVLink } from "react-csv";
 
 const reducer = (state, action) => {
   if (action.type === "LOAD_CONTACTS") {
@@ -247,9 +247,8 @@ const Contacts = () => {
       <ConfirmationModal
         title={
           deletingContact
-            ? `${i18n.t("contacts.confirmationModal.deleteTitle")} ${
-                deletingContact.name
-              }?`
+            ? `${i18n.t("contacts.confirmationModal.deleteTitle")} ${deletingContact.name
+            }?`
             : `${i18n.t("contacts.confirmationModal.importTitlte")}`
         }
         open={confirmOpen}
@@ -295,10 +294,15 @@ const Contacts = () => {
             {i18n.t("contacts.buttons.add")}
           </Button>
 
-         <CSVLink style={{ textDecoration:'none'}} separator=";" filename={'whaticket.csv'} data={contacts.map((contact) => ({ name: contact.name, number: contact.number, email: contact.email }))}>
-          <Button	variant="contained" color="primary"> 
-          EXPORTAR CONTATOS 
-          </Button>
+          <CSVLink style={{ textDecoration: 'none' }} separator=";" filename={'whaticket.csv'}
+            data={contacts.map(contact => {
+              const { id, isGroup, companyId, createdAt, updatedAt, profilePicUrl, ...rest } = contact;
+              return rest; // Retorna um novo objeto sem as colunas indesejadas
+            })}
+          >
+            <Button variant="contained" color="primary">
+              EXPORTAR CONTATOS
+            </Button>
           </CSVLink>
 
         </MainHeaderButtonsWrapper>
