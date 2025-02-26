@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext, useRef } from "react";
 
 import * as Yup from "yup";
 import { Formik, Form, Field } from "formik";
+import { InputLabel } from "@material-ui/core";
 import { toast } from "react-toastify";
 import { useHistory } from "react-router-dom";
 
@@ -67,7 +68,7 @@ const ScheduleSchema = Yup.object().shape({
 		.min(5, "Mensagem muito curta")
 		.required("Obrigatório"),
 	contactId: Yup.number().required("Obrigatório"),
-	sendAt: Yup.string().required("Obrigatório")
+	sendAt: Yup.string().required("Obrigatório"),
 });
 
 const ScheduleModal = ({ open, onClose, scheduleId, contactId, cleanContact, reload, setUpdateLocation }) => {
@@ -83,6 +84,11 @@ const ScheduleModal = ({ open, onClose, scheduleId, contactId, cleanContact, rel
 		body: "",
 		contactId: "",
 		sendAt: moment().add(1, 'hour').format('YYYY-MM-DDTHH:mm'),
+		perDay: 1,
+		periodStart: moment().format('HH:mm'),
+		periodEnd: moment().add(3, 'hours').format('HH:mm'),
+		sendAtStart: moment().format('YYYY-MM-DD'),
+		sendAtEnd: moment().add(3, 'day').format('YYYY-MM-DD'),
 		sentAt: "",
 	};
 
@@ -133,7 +139,15 @@ const ScheduleModal = ({ open, onClose, scheduleId, contactId, cleanContact, rel
 
 					const { data } = await api.get(`/service_schedules/${scheduleId}`);
 					setSchedule(prevState => {
-						return { ...prevState, ...data, sendAt: moment(data.sendAt).format('YYYY-MM-DDTHH:mm') };
+						return {
+							...prevState, ...data,
+							sendAt: moment(data.sendAt).format('YYYY-MM-DDTHH:mm'),
+							sendAtStart: moment(data.sendAt).format('YYYY-MM-DD'),
+							sendAtEnd: moment(data.sendAt).add(3, 'day').format('YYYY-MM-DD'),
+							periodStart: moment().format('HH:mm'),
+							periodEnd: moment().add(3, 'hours').format('HH:mm'),
+							perDay: 1
+						};
 					});
 					//setCurrentContact(data.contact);
 				})()
@@ -160,6 +174,7 @@ const ScheduleModal = ({ open, onClose, scheduleId, contactId, cleanContact, rel
 	const handleSaveSchedule = async values => {
 
 		const scheduleData = { ...values, userId: user.id };
+
 		const { name } = await api.get(`/hinova_desc_user/${scheduleData.contactId}`)
 		scheduleData.hinovaContactName = name
 
@@ -196,7 +211,6 @@ const ScheduleModal = ({ open, onClose, scheduleId, contactId, cleanContact, rel
 			}
 
 			if (attachmentCsv != null) {
-				console.log("PASS CSV");
 				console.log(attachmentCsv);
 				const formData = new FormData();
 				formData.append("file", attachmentCsv);
@@ -320,7 +334,7 @@ const ScheduleModal = ({ open, onClose, scheduleId, contactId, cleanContact, rel
 													<Chip
 														{...getTagProps({ index })}
 														key={option.id}
-														label={option.name} // 👈 Aqui você exibe o `name` do objeto na tag
+														label={option.name}
 														style={{
 															backgroundColor: 'green',
 															color: 'white',
@@ -434,29 +448,117 @@ const ScheduleModal = ({ open, onClose, scheduleId, contactId, cleanContact, rel
 										</Button>
 									)}
 								</div>
-								<div style={{ padding: "14px" }}>
+								{/* <div style={{ padding: "14px" }}>
 									status: "{capitalize(schedule.status)}"<br />
-									*Escolha a data/hora que deseja emcaminhar esta mensagem ao destinatário!*
-
-								</div>
+									*Escolha a data/hora que deseja encaminhar esta mensagem ao destinatário!*
+									*Se colocar 0, executa somente 1 vez ao dia*
+								</div> */}
 								<br />
 								<div className={classes.multFieldLine}>
+									<Field
+										as={TextField}
+										type="number"
+										name="perDay"
+										InputLabelProps={{
+											shrink: true,
+										}}
+										variant="outlined"
+										fullWidth
+									/>
+								</div>
+								<br />
+								<div>
+									<InputLabel htmlFor="qtdHours">De quanto em quanto tempo</InputLabel>
+								</div>
+								<div className={classes.multFieldLine}>
+									<Field
+										as="select"
+										label="De quanto em quanto tempo"
+										name="qtdHours"
+										style={{
+											padding: "15px",
+											width: "100%",
+											border: "1px solid #c4c4c4",
+											borderRadius: "4px"
+										}}
+									>
+										{[...Array(12)].map((_, i) => (
+											<option key={i + 1} value={i + 1}>
+												{i + 1} {i + 1 === 1 ? 'hora' : 'horas'}
+											</option>
+										))}
+									</Field>
 								</div>
 								<br />
 								<div className={classes.multFieldLine}>
 									<Field
 										as={TextField}
-										label={i18n.t("scheduleModal.form.sendAt")}
-										type="datetime-local"
-										name="sendAt"
+										label="Período Inicial"
+										type="time"
+										name="periodStart"
+										onChange={(e) => {
+											setSchedule({ ...schedule, periodStart: e.target.value });
+										}}
+										defaultValue={moment().format('HH:mm')}
 										InputLabelProps={{
 											shrink: true,
 										}}
-										error={touched.sendAt && Boolean(errors.sendAt)}
-										helperText={touched.sendAt && errors.sendAt}
 										variant="outlined"
 										fullWidth
 									/>
+									<Field
+										as={TextField}
+										label="Período Final"
+										type="time"
+										name="periodEnd"
+										defaultValue={new Date().toISOString().slice(11, 16)}
+										onChange={(e) => {
+											setSchedule({ ...schedule, periodEnd: e.target.value });
+										}}
+										InputLabelProps={{
+											shrink: true,
+										}}
+										variant="outlined"
+										fullWidth
+									/>
+								</div>
+								<br />
+								<div className={classes.multFieldLine}>
+									<Field
+										as={TextField}
+										label="Data Inicial"
+										defaultValue={moment().format('YYYY-MM-DD')}
+										type="date"
+										name="sendAtStart"
+										onChange={(e) => {
+											setSchedule({ ...schedule, sendAtStart: e.target.value });
+										}}
+										InputLabelProps={{
+											shrink: true,
+										}}
+										error={touched.sendAtStart && Boolean(errors.sendAtStart)}
+										helperText={touched.sendAtStart && errors.sendAtStart}
+										variant="outlined"
+										fullWidth
+									/>
+									<Field
+										as={TextField}
+										label="Data Final"
+										type="date"
+										name="sendAtEnd"
+										onChange={(e) => {
+											setSchedule({ ...schedule, sendAtEnd: e.target.value });
+										}}
+										defaultValue={moment().add(3, 'days').format('YYYY-MM-DD')}
+										InputLabelProps={{
+											shrink: true,
+										}}
+										error={touched.sendAtEnd && Boolean(errors.sendAtEnd)}
+										helperText={touched.sendAtEnd && errors.sendAtEnd}
+										variant="outlined"
+										fullWidth
+									/>
+
 								</div>
 							</DialogContent>
 							<DialogActions>
@@ -483,16 +585,15 @@ const ScheduleModal = ({ open, onClose, scheduleId, contactId, cleanContact, rel
 									</Button>
 
 								)}
-
-
 							</DialogActions>
 							<DialogActions>
-								<a style={{ backgroundColor: "red", color: "#ffffff", width: "100%", padding: "13px", textDecoration: "none", fontWeight: "bold", maxWidth: "300px", margin: "0 auto", marginTop: "10px", borderRadius: "12px" }} href="kanban_services">VOLTAR</a>
+								<Button
+									className={classes.btnWrapper}
+									style={{ backgroundColor: "green", color: "#ffffff", width: "100%", maxWidth: "300px", margin: "0 auto" }}
+									href="kanban_services"
+								>VOLTAR</Button>
 							</DialogActions>
 						</Form>
-
-
-
 					)}
 				</Formik>
 			</Dialog>

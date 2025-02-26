@@ -64,6 +64,21 @@ class ScheduleService extends Model<ScheduleService> {
   @Column(DataType.STRING)
   CsvUrl: string;
 
+  @Column(DataType.STRING)
+  perDay: string;
+
+  @Column(DataType.STRING)
+  periodStart: string;
+
+  @Column(DataType.STRING)
+  periodEnd: string;
+
+  @Column(DataType.STRING)
+  sendAtStart: string;
+
+  @Column(DataType.STRING)
+  sendAtEnd: string;
+
   @CreatedAt
   createdAt: Date;
 

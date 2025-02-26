@@ -46,7 +46,12 @@ export const store = async (req: Request, res: Response): Promise<Response> => {
     mediaPath,
     mediaName,
     hinovaContactName,
-    CsvUrl
+    CsvUrl,
+    perDay,
+    periodStart,
+    periodEnd,
+    sendAtStart,
+    sendAtEnd
   } = req.body;
 
   const { companyId } = req.user;
@@ -61,7 +66,12 @@ export const store = async (req: Request, res: Response): Promise<Response> => {
     mediaPath,
     mediaName,
     hinovaContactName,
-    CsvUrl
+    CsvUrl,
+    perDay,
+    periodStart,
+    periodEnd,
+    sendAtStart,
+    sendAtEnd
   });
 
   const io = getIO();
