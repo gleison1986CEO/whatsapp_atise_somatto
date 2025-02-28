@@ -51,7 +51,11 @@ export const store = async (req: Request, res: Response): Promise<Response> => {
     periodStart,
     periodEnd,
     sendAtStart,
-    sendAtEnd
+    sendAtEnd,
+    fila,
+    atendente,
+    para_atendimento,
+    qtdHours
   } = req.body;
 
   const { companyId } = req.user;
@@ -71,7 +75,11 @@ export const store = async (req: Request, res: Response): Promise<Response> => {
     periodStart,
     periodEnd,
     sendAtStart,
-    sendAtEnd
+    sendAtEnd,
+    fila,
+    atendente,
+    para_atendimento,
+    qtdHours
   });
 
   const io = getIO();

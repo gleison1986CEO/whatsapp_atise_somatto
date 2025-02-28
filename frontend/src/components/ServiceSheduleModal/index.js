@@ -79,17 +79,21 @@ const ScheduleModal = ({ open, onClose, scheduleId, contactId, cleanContact, rel
 	const { user } = useContext(AuthContext);
 	const [enableContact, setEnableContact] = useState(true);
 	const [enableCsv, setEnableCsv] = useState(true);
+	const [atendentes, setAtendentes] = useState([])
 
 	const initialState = {
 		body: "",
 		contactId: "",
 		sendAt: moment().add(1, 'hour').format('YYYY-MM-DDTHH:mm'),
-		perDay: 1,
+		perDay: 0,
 		periodStart: moment().format('HH:mm'),
 		periodEnd: moment().add(3, 'hours').format('HH:mm'),
-		sendAtStart: moment().format('YYYY-MM-DD'),
+		sendAtStart: moment().format('DD-MM-YYYY'),
 		sendAtEnd: moment().add(3, 'day').format('YYYY-MM-DD'),
 		sentAt: "",
+		qrdHours: 1,
+		atendente: "",
+		fila: "",
 	};
 
 	const initialContact = {
@@ -103,8 +107,28 @@ const ScheduleModal = ({ open, onClose, scheduleId, contactId, cleanContact, rel
 	const [contacts, setContacts] = useState([initialContact]);
 	const [attachment, setAttachment] = useState(null);
 	const [attachmentCsv, setAttachmentCsv] = useState(null);
+	const [queues, setQueues] = useState([])
+	const [descUsers, setDescUsers] = useState([])
 	const attachmentFile = useRef(null);
 	const attachmentFileCsv = useRef(null);
+	const [isModalOpen, setIsModalOpen] = useState(false);
+	const [userInfoModal, setUserInfoModal] = useState([]);
+
+	useEffect(() => {
+		const getAtendentes = async () => {
+			const { data } = await api.get('/users');
+			setAtendentes(data)
+		}
+		getAtendentes();
+	}, [])
+
+	useEffect(() => {
+		const getQueues = async () => {
+			const { data } = await api.get('/queue');
+			setQueues(data)
+		}
+		getQueues();
+	}, [])
 
 	useEffect(() => {
 		if (contactId && contacts.length) {
@@ -141,12 +165,15 @@ const ScheduleModal = ({ open, onClose, scheduleId, contactId, cleanContact, rel
 					setSchedule(prevState => {
 						return {
 							...prevState, ...data,
-							sendAt: moment(data.sendAt).format('YYYY-MM-DDTHH:mm'),
-							sendAtStart: moment(data.sendAt).format('YYYY-MM-DD'),
-							sendAtEnd: moment(data.sendAt).add(3, 'day').format('YYYY-MM-DD'),
+							sendAt: moment().format('YYYY-MM-DDTHH:mm'),
+							sendAtStart: moment().format('YYYY-MM-DD'),
+							sendAtEnd: moment().add(3, 'day').format('YYYY-MM-DD'),
 							periodStart: moment().format('HH:mm'),
 							periodEnd: moment().add(3, 'hours').format('HH:mm'),
-							perDay: 1
+							perDay: 0,
+							qrdHours: 1,
+							atendente: "",
+							fila: ""
 						};
 					});
 					//setCurrentContact(data.contact);
@@ -168,6 +195,41 @@ const ScheduleModal = ({ open, onClose, scheduleId, contactId, cleanContact, rel
 		const file = head(e.target.files);
 		if (file) {
 			setAttachment(file);
+		}
+	};
+
+	const descHinovaUserInfo = async (contacts) => {
+		try {
+			await Promise.all(contacts.map(async (contact) => {
+				const { data } = await api.get(`/hinova_desc_user/${contact.id}`);
+				if (data && data.veiculos && Array.isArray(data.veiculos)) {
+					data.veiculos.forEach((veiculo) => {
+						const groupedUsers = data.veiculos.reduce((acc, veiculo) => {
+							const userKey = contact.name;
+							if (!acc[userKey]) {
+								acc[userKey] = [];
+							}
+
+							acc[userKey].push({
+								usuario: contact.name,
+								chassi: veiculo.chassi || '',
+								placa: veiculo.placa || '',
+								descrição: veiculo.descricao_modelo || ''
+							});
+
+							return acc;
+						}, {});
+
+						setDescUsers(prevUsers => ({
+							...prevUsers,
+							...groupedUsers
+						}));
+					});
+				}
+			}));
+		} catch (error) {
+			console.error("Error fetching vehicle data:", error);
+			// toastError("Erro ao buscar dados dos veículos");
 		}
 	};
 
@@ -211,7 +273,6 @@ const ScheduleModal = ({ open, onClose, scheduleId, contactId, cleanContact, rel
 			}
 
 			if (attachmentCsv != null) {
-				console.log(attachmentCsv);
 				const formData = new FormData();
 				formData.append("file", attachmentCsv);
 				formData.append("isCsv", true);
@@ -280,14 +341,14 @@ const ScheduleModal = ({ open, onClose, scheduleId, contactId, cleanContact, rel
 			<Dialog
 				open={open}
 				onClose={handleClose}
-				maxWidth="xs"
+				maxWidth="md" // Change from "xs" to "md"
 				fullWidth
 				scroll="paper"
+			// style={{ width: "200%" }} // Add this style
 			>
 				<DialogTitle id="form-dialog-title">
 					<center>{schedule.status === 'ERRO' ? 'Erro no envio' : `Encaminhamento de mensagens`}</center>
 				</DialogTitle>
-
 				<Formik
 					initialValues={schedule}
 					enableReinitialize={true}
@@ -302,6 +363,31 @@ const ScheduleModal = ({ open, onClose, scheduleId, contactId, cleanContact, rel
 					{({ touched, errors, isSubmitting, values, setFieldValue }) => (
 						<Form>
 							<DialogContent dividers>
+								<Dialog
+									open={isModalOpen}
+									onClose={() => setIsModalOpen(false)}
+									maxWidth="sm"
+									fullWidth
+								>
+									<DialogTitle>
+										{userInfoModal[0]?.usuario}
+									</DialogTitle>
+									<DialogContent>
+										{userInfoModal && userInfoModal.map((userInfo, key) => (
+											<div key={key}>
+												<p>Placa_{key + 1}: {userInfo.placa}</p>
+												<p>Chassi_{key + 1}: {userInfo.chassi}</p>
+												<p>Descrição_{key + 1}: {userInfo.descrição}</p>
+												<br />
+											</div>
+										))}
+									</DialogContent>
+									<DialogActions>
+										<Button onClick={() => setIsModalOpen(false)} color="primary">
+											Fechar
+										</Button>
+									</DialogActions>
+								</Dialog>
 								<div className={classes.multFieldLine}>
 									<FormControl
 										variant="outlined"
@@ -313,7 +399,6 @@ const ScheduleModal = ({ open, onClose, scheduleId, contactId, cleanContact, rel
 											style={{ display: enableContact ? "" : "none" }}
 											options={contacts}
 											getOptionLabel={(option) => option.name}
-											// isOptionEqualToValue={(option, value) => option.id === value.id}
 											onChange={(e, selectedContacts) => {
 												setSchedule({
 													...schedule,
@@ -324,6 +409,7 @@ const ScheduleModal = ({ open, onClose, scheduleId, contactId, cleanContact, rel
 												} else {
 													setCurrentContact(initialContact);
 												}
+												descHinovaUserInfo(selectedContacts);
 												setEnableCsv(!enableCsv);
 											}}
 											renderInput={(params) => (
@@ -385,7 +471,7 @@ const ScheduleModal = ({ open, onClose, scheduleId, contactId, cleanContact, rel
 									</FormControl>
 								</div>
 								<br />
-								<div className={classes.multFieldLine}>
+								<div>
 									<Field
 										as={TextField}
 										rows={9}
@@ -401,7 +487,7 @@ const ScheduleModal = ({ open, onClose, scheduleId, contactId, cleanContact, rel
 									/>
 								</div>
 								<br />
-								<div className={classes.multFieldLine}>
+								<div>
 									<Field
 										as={TextField}
 										label={i18n.t("scheduleModal.form.link")}
@@ -448,17 +534,108 @@ const ScheduleModal = ({ open, onClose, scheduleId, contactId, cleanContact, rel
 										</Button>
 									)}
 								</div>
-								{/* <div style={{ padding: "14px" }}>
-									status: "{capitalize(schedule.status)}"<br />
-									*Escolha a data/hora que deseja encaminhar esta mensagem ao destinatário!*
-									*Se colocar 0, executa somente 1 vez ao dia*
-								</div> */}
+								<div>
+									<InputLabel htmlFor="qtdHours">Informações do usuário</InputLabel>
+								</div>
+								<div style={{ display: 'flex', flexDirection: 'row', gap: '8px', flexWrap: 'wrap' }}>
+									{Object.entries(descUsers).map(([usuario, veiculos]) => (
+										<Button
+											key={usuario}
+											variant="contained"
+											onClick={() => [setIsModalOpen(true), setUserInfoModal(veiculos)]}
+											style={{
+												backgroundColor: 'green',
+												color: 'white',
+												margin: '4px'
+											}}
+										>
+											{usuario} ({veiculos.length})
+										</Button>
+									))}
+								</div>
+								<br />
+								<div className={classes.multFieldLine}>
+									<div style={{ width: '50%', marginRight: '8px' }}>
+										<div>
+											<InputLabel>Atendente</InputLabel>
+										</div>
+										<Field
+											as="select"
+											name="atendente"
+											onChange={(e) => {
+												setSchedule({ ...schedule, atendente: e.target.value })
+											}}
+											style={{
+												padding: "15px",
+												width: "100%",
+												border: "1px solid #c4c4c4",
+												borderRadius: "4px"
+											}}
+										>
+											<option key="0" value="0">
+												Selecione
+											</option>
+											{atendentes.users && atendentes.users.map((value, i) => (
+												<option key={value.id} value={value.id}>
+													{value.name}
+												</option>
+											))}
+										</Field>
+									</div>
+									<div style={{ width: '50%', marginRight: '8px' }}>
+										<div>
+											<InputLabel>Fila</InputLabel>
+										</div>
+										<Field
+											as="select"
+											name="fila"
+											onChange={(e) => {
+												setSchedule({ ...schedule, fila: e.target.value })
+											}}
+											style={{
+												padding: "15px",
+												width: "100%",
+												border: "1px solid #c4c4c4",
+												borderRadius: "4px"
+											}}
+										>
+											<option key={0} value={0}>
+												Selecione
+											</option>
+											{queues && queues.map((value, i) => (
+												<option key={value.id} value={value.id}>
+													{value.name}
+												</option>
+											))}
+										</Field>
+									</div>
+								</div>
 								<br />
 								<div className={classes.multFieldLine}>
 									<Field
 										as={TextField}
 										type="number"
+										label="Envios por dia"
 										name="perDay"
+										defaultValue={0}
+										onChange={(e) => {
+											setSchedule({ ...schedule, perDay: e.target.value });
+										}}
+										InputLabelProps={{
+											shrink: true,
+										}}
+										variant="outlined"
+										fullWidth
+									/>
+									<Field
+										as={TextField}
+										type="number"
+										label="Intervalo de dias"
+										name="intervalo"
+										defaultValue={0}
+										onChange={(e) => {
+											// setSchedule({ ...schedule, perDay: e.target.value });
+										}}
 										InputLabelProps={{
 											shrink: true,
 										}}
@@ -475,6 +652,9 @@ const ScheduleModal = ({ open, onClose, scheduleId, contactId, cleanContact, rel
 										as="select"
 										label="De quanto em quanto tempo"
 										name="qtdHours"
+										onChange={(e) => {
+											setSchedule({ ...schedule, qtdHours: e.target.value });
+										}}
 										style={{
 											padding: "15px",
 											width: "100%",
@@ -527,7 +707,7 @@ const ScheduleModal = ({ open, onClose, scheduleId, contactId, cleanContact, rel
 									<Field
 										as={TextField}
 										label="Data Inicial"
-										defaultValue={moment().format('YYYY-MM-DD')}
+										defaultValue={moment().format('DD-MM-YYYY')}
 										type="date"
 										name="sendAtStart"
 										onChange={(e) => {

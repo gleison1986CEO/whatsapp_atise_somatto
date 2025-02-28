@@ -148,6 +148,13 @@ async function handleVerifyServiceSchedules(job) {
       where: {
         status: "PENDENTE",
         sentAt: null,
+        para_atendimento: 0,
+        periodStart: {
+          [Op.gte]: moment().format("HH:mm"),
+        },
+        periodEnd: {
+          [Op.lte]: moment().format("HH:mm"),
+        },
         sendAtStart: {
           [Op.gte]: moment().format("YYYY-MM-DD"),
         },
@@ -157,7 +164,6 @@ async function handleVerifyServiceSchedules(job) {
       },
       include: [{ model: Contact, as: "contact" }]
     });
-    logger.info(`Verificacao de Serviço 0711`);
     if (count > 0) {
       schedules.map(async schedule => {
         await schedule.update({

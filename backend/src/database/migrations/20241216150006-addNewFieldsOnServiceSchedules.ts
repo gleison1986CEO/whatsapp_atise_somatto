@@ -27,6 +27,19 @@ module.exports = {
         type: DataTypes.STRING,
         allowNull: true
       }),
+      queryInterface.addColumn("ScheduleServices", "atendente", {
+        type: DataTypes.INTEGER,
+        allowNull: true
+      }),
+      queryInterface.addColumn("ScheduleServices", "fila", {
+        type: DataTypes.INTEGER,
+        allowNull: true
+      }),
+      queryInterface.addColumn("ScheduleServices", "para_atendimento", {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+        defaultValue: 0
+      }),
     ]);
   },
 
@@ -37,7 +50,10 @@ module.exports = {
       queryInterface.removeColumn("ScheduleServices", "periodEnd"),
       queryInterface.removeColumn("ScheduleServices", "sendAtStart"),
       queryInterface.removeColumn("ScheduleServices", "sendAtEnd"),
-      queryInterface.removeColumn("ScheduleServices", "qtdHours")
+      queryInterface.removeColumn("ScheduleServices", "qtdHours"),
+      queryInterface.removeColumn("ScheduleServices", "atendente"),
+      queryInterface.removeColumn("ScheduleServices", "fila"),
+      queryInterface.removeColumn("ScheduleServices", "para_atendimento")
     ]);
   }
 };

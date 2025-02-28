@@ -24,6 +24,10 @@ interface ScheduleData {
   periodEnd?: string;
   sendAtStart?: string;
   sendAtEnd?: string;
+  fila?: string;
+  atendente?: string;
+  para_atendimento?: string;
+  qtdHours?: string;
 }
 
 interface Request {
@@ -64,7 +68,11 @@ const UpdateUserService = async ({
     periodStart,
     periodEnd,
     sendAtStart,
-    sendAtEnd
+    sendAtEnd,
+    fila,
+    atendente,
+    para_atendimento,
+    qtdHours
   } = scheduleData;
 
   try {
@@ -90,7 +98,11 @@ const UpdateUserService = async ({
     periodStart,
     periodEnd,
     sendAtStart,
-    sendAtEnd
+    sendAtEnd,
+    fila,
+    atendente,
+    para_atendimento,
+    qtdHours
   });
 
   await schedule.reload();

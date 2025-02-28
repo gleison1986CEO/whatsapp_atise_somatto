@@ -20,6 +20,10 @@ interface Request {
   periodEnd?: string;
   sendAtStart?: string;
   sendAtEnd?: string;
+  fila?: string;
+  atendente?: string;
+  para_atendimento?: string;
+  qtdHours?: string;
 }
 
 const CreateService = async ({
@@ -37,7 +41,11 @@ const CreateService = async ({
   periodStart,
   periodEnd,
   sendAtStart,
-  sendAtEnd
+  sendAtEnd,
+  fila,
+  atendente,
+  para_atendimento,
+  qtdHours
 }: Request): Promise<ScheduleService> => {
   const schema = Yup.object().shape({
     body: Yup.string().required().min(5),
@@ -67,7 +75,11 @@ const CreateService = async ({
       periodStart,
       periodEnd,
       sendAtStart,
-      sendAtEnd
+      sendAtEnd,
+      fila,
+      atendente,
+      para_atendimento,
+      qtdHours
     }
   );
 

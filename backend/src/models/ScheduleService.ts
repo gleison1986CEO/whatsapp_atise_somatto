@@ -34,25 +34,25 @@ class ScheduleService extends Model<ScheduleService> {
   @Column(DataType.TEXT)
   link: string;
 
-  @Column
+  @Column(DataType.DATE)
   sendAt: Date;
 
-  @Column
+  @Column(DataType.DATE)
   sentAt: Date;
 
-  @Column
+  @Column(DataType.INTEGER)
   contactId: number;
 
   @ForeignKey(() => Ticket)
-  @Column
+  @Column(DataType.INTEGER)
   ticketId: number;
 
   @ForeignKey(() => User)
-  @Column
+  @Column(DataType.INTEGER)
   userId: number;
 
   @ForeignKey(() => Company)
-  @Column
+  @Column(DataType.INTEGER)
   companyId: number;
 
   @Column(DataType.STRING)
@@ -74,10 +74,22 @@ class ScheduleService extends Model<ScheduleService> {
   periodEnd: string;
 
   @Column(DataType.STRING)
+  fila: string;
+
+  @Column(DataType.STRING)
+  atendente: string;
+
+  @Column(DataType.INTEGER)
+  para_atendimento: number;
+
+  @Column(DataType.STRING)
   sendAtStart: string;
 
   @Column(DataType.STRING)
   sendAtEnd: string;
+
+  @Column(DataType.STRING)
+  qtdHours: string;
 
   @CreatedAt
   createdAt: Date;
@@ -97,5 +109,4 @@ class ScheduleService extends Model<ScheduleService> {
   @BelongsTo(() => Company)
   company: Company;
 }
-
 export default ScheduleService;
