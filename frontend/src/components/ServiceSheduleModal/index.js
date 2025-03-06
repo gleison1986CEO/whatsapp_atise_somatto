@@ -86,14 +86,16 @@ const ScheduleModal = ({ open, onClose, scheduleId, contactId, cleanContact, rel
 		contactId: "",
 		sendAt: moment().add(1, 'hour').format('YYYY-MM-DDTHH:mm'),
 		perDay: 0,
+		betweenDays: 0,
 		periodStart: moment().format('HH:mm'),
 		periodEnd: moment().add(3, 'hours').format('HH:mm'),
 		sendAtStart: moment().format('DD-MM-YYYY'),
 		sendAtEnd: moment().add(3, 'day').format('YYYY-MM-DD'),
 		sentAt: "",
-		qrdHours: 1,
-		atendente: "",
-		fila: "",
+		qtdHours: 1,
+		para_atendimento: 0,
+		atendente: 0,
+		fila: 0,
 	};
 
 	const initialContact = {
@@ -171,9 +173,11 @@ const ScheduleModal = ({ open, onClose, scheduleId, contactId, cleanContact, rel
 							periodStart: moment().format('HH:mm'),
 							periodEnd: moment().add(3, 'hours').format('HH:mm'),
 							perDay: 0,
-							qrdHours: 1,
-							atendente: "",
-							fila: ""
+							betweenDays: 0,
+							qtdHours: 1,
+							para_atendimento: 0,
+							atendente: 0,
+							fila: 0
 						};
 					});
 					//setCurrentContact(data.contact);
@@ -237,8 +241,7 @@ const ScheduleModal = ({ open, onClose, scheduleId, contactId, cleanContact, rel
 
 		const scheduleData = { ...values, userId: user.id };
 
-		const { name } = await api.get(`/hinova_desc_user/${scheduleData.contactId}`)
-		scheduleData.hinovaContactName = name
+		scheduleData.hinovaContactName = scheduleData.contacts[0].name
 
 		try {
 
@@ -375,9 +378,9 @@ const ScheduleModal = ({ open, onClose, scheduleId, contactId, cleanContact, rel
 									<DialogContent>
 										{userInfoModal && userInfoModal.map((userInfo, key) => (
 											<div key={key}>
-												<p>Placa_{key + 1}: {userInfo.placa}</p>
-												<p>Chassi_{key + 1}: {userInfo.chassi}</p>
-												<p>Descrição_{key + 1}: {userInfo.descrição}</p>
+												<p>placa_{key + 1}: {userInfo.placa}</p>
+												<p>chassi_{key + 1}: {userInfo.chassi}</p>
+												<p>descrição_{key + 1}: {userInfo.descrição}</p>
 												<br />
 											</div>
 										))}
@@ -634,7 +637,7 @@ const ScheduleModal = ({ open, onClose, scheduleId, contactId, cleanContact, rel
 										name="intervalo"
 										defaultValue={0}
 										onChange={(e) => {
-											// setSchedule({ ...schedule, perDay: e.target.value });
+											setSchedule({ ...schedule, betweenDays: e.target.value });
 										}}
 										InputLabelProps={{
 											shrink: true,

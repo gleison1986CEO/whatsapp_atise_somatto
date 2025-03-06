@@ -20,6 +20,7 @@ interface ScheduleData {
   hinovaContactName?: string;
   CsvUrl?: string;
   perDay?: string;
+  betweenDays?: string;
   periodStart?: string;
   periodEnd?: string;
   sendAtStart?: string;
@@ -65,6 +66,7 @@ const UpdateUserService = async ({
     hinovaContactName,
     CsvUrl,
     perDay,
+    betweenDays,
     periodStart,
     periodEnd,
     sendAtStart,
@@ -95,6 +97,7 @@ const UpdateUserService = async ({
     hinovaContactName,
     CsvUrl,
     perDay,
+    betweenDays,
     periodStart,
     periodEnd,
     sendAtStart,

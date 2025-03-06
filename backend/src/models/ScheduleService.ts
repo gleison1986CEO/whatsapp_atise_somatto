@@ -68,6 +68,9 @@ class ScheduleService extends Model<ScheduleService> {
   perDay: string;
 
   @Column(DataType.STRING)
+  betweenDays: string;
+
+  @Column(DataType.STRING)
   periodStart: string;
 
   @Column(DataType.STRING)

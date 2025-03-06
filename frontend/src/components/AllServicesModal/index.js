@@ -237,7 +237,7 @@ const AllServicesModal = ({ open, onClose, scheduleId, contactId, cleanContact, 
 				scroll="paper"
 			>
 				<DialogTitle id="form-dialog-title">
-					CAMPOS DISPONÍVEIS
+					CAMPOS DISPONÍVEIS PARA CSV
 				</DialogTitle>
 				<Formik
 					initialValues={schedule}

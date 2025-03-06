@@ -7,6 +7,10 @@ module.exports = {
         type: DataTypes.STRING,
         allowNull: true
       }),
+      queryInterface.addColumn("ScheduleServices", "betweenDays", {
+        type: DataTypes.STRING,
+        allowNull: true
+      }),
       queryInterface.addColumn("ScheduleServices", "periodStart", {
         type: DataTypes.STRING,
         allowNull: true
@@ -46,6 +50,7 @@ module.exports = {
   down: (queryInterface: QueryInterface) => {
     return Promise.all([
       queryInterface.removeColumn("ScheduleServices", "perDay"),
+      queryInterface.removeColumn("ScheduleServices", "betweenDays"),
       queryInterface.removeColumn("ScheduleServices", "periodStart"),
       queryInterface.removeColumn("ScheduleServices", "periodEnd"),
       queryInterface.removeColumn("ScheduleServices", "sendAtStart"),

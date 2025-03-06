@@ -16,6 +16,7 @@ interface Request {
   hinovaContactName?: string;
   CsvUrl?: string;
   perDay?: string;
+  betweenDays?: string;
   periodStart?: string;
   periodEnd?: string;
   sendAtStart?: string;
@@ -38,6 +39,7 @@ const CreateService = async ({
   hinovaContactName,
   CsvUrl,
   perDay,
+  betweenDays,
   periodStart,
   periodEnd,
   sendAtStart,
@@ -72,6 +74,7 @@ const CreateService = async ({
       hinovaContactName,
       CsvUrl,
       perDay,
+      betweenDays,
       periodStart,
       periodEnd,
       sendAtStart,

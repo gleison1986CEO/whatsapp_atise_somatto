@@ -7,7 +7,7 @@ import { logger } from "./utils/logger";
 import moment from "moment";
 import Schedule from "./models/Schedule";
 import Contact from "./models/Contact";
-import { Op, QueryTypes } from "sequelize";
+import { Op, QueryTypes, Sequelize } from "sequelize";
 import GetDefaultWhatsApp from "./helpers/GetDefaultWhatsApp";
 import Campaign from "./models/Campaign";
 import ContactList from "./models/ContactList";
@@ -150,36 +150,53 @@ async function handleVerifyServiceSchedules(job) {
         sentAt: null,
         para_atendimento: 0,
         periodStart: {
-          [Op.gte]: moment().format("HH:mm"),
-        },
-        periodEnd: {
           [Op.lte]: moment().format("HH:mm"),
         },
+        periodEnd: {
+          [Op.gte]: moment().format("HH:mm"),
+        },
         sendAtStart: {
-          [Op.gte]: moment().format("YYYY-MM-DD"),
+          [Op.lte]: moment().format("YYYY-MM-DD"),
         },
         sendAtEnd: {
-          [Op.lte]: moment().add("30", "seconds").format("YYYY-MM-DD"),
+          [Op.gte]: moment().add("30", "seconds").format("YYYY-MM-DD"),
+        },
+        qtdHours: {
+          [Op.lte]: moment().diff(moment().startOf('day'), 'hours').toString()
+        },
+        updatedAt: {
+          [Op.lte]: moment().subtract(Number(Sequelize.col("betweenDays")), 'days').toDate()
         }
       },
       include: [{ model: Contact, as: "contact" }]
     });
+    logger.info(`VerifyService Schedules -> SendServiceSchedules -> ${count}`);
     if (count > 0) {
       schedules.map(async schedule => {
-        await schedule.update({
-          status: "AGENDADA"
-        });
-        sendServiceScheduleMessages.add(
-          "SendSheduleMessage",
-          { schedule },
-          { delay: 40000 }
-        );
-        logger.info(`Disparo do serviço agendado para: ${schedule.contact?.name}`);
+        logger.info(`VerifyService Schedules -> SendServiceSchedules 1 -> ${schedule.perDay}`);
+        if (parseInt(schedule.perDay) > 0) {
+          logger.info(`VerifyService Schedules -> SendServiceSchedules 2 -> ${schedule.perDay}`);
+          await schedule.update({
+            status: "AGENDADA",
+            para_atendimento: 1,
+            perDay: Number(schedule.perDay) - 1
+          });
+          sendServiceScheduleMessages.add(
+            "SendSheduleMessage",
+            { schedule },
+            { delay: 40000 }
+          );
+          logger.info(`Disparo do serviço agendado para: ${schedule.contact?.name}`);
+        }
       });
     }
   } catch (e: any) {
     Sentry.captureException(e);
-    logger.error("SendServiceScheduledMessage -> Verify: error", e.message);
+    logger.error("SendServiceScheduledMessage -> Verify: error", {
+      message: e.message,
+      stack: e.stack,
+      error: JSON.stringify(e, null, 2)
+    });
     throw e;
   }
 }
@@ -315,9 +332,6 @@ async function handleSendServiceScheduledMessage(job) {
   } = job;
   let scheduleRecord: ScheduleService | null = null;
 
-  logger.info(JSON.stringify(schedule));
-
-
   const whatsapp = await GetDefaultWhatsApp(schedule.companyId);
 
   if (schedule.contact == null && schedule.CsvUrl) {
@@ -328,7 +342,6 @@ async function handleSendServiceScheduledMessage(job) {
   const hinovaUserData = await hinovaService.associateDataFromBackEnd(schedule.contactId)
 
   try {
-    logger.info(`Busca de Serviços 0711`);
     scheduleRecord = await ScheduleService.findByPk(schedule.id);
   } catch (e) {
     Sentry.captureException(e);
@@ -341,27 +354,34 @@ async function handleSendServiceScheduledMessage(job) {
 
     if (schedule?.hinovaContactName?.includes("PLATAFORMA") || schedule.hinovaContactName === null) {
       result = schedule.body
+    } else if (schedule?.hinovaContactName?.includes("HINOVA") || schedule.hinovaContactName === null) {
+      result = schedule.body.replace(/{(.*?)}/g, (_, key) => {
+        const fieldMap = {};
+        for (let i = 1; i <= 30; i++) {
+          fieldMap[`placa_${i}`] = `veiculos[${i - 1}].placa`;
+          fieldMap[`chassi_${i}`] = `veiculos[${i - 1}].chassi`;
+          fieldMap[`descrição_${i}`] = `veiculos[${i - 1}].descricao_modelo`;
+        }
+        const path = fieldMap[key] || key;
+        const value = getNestedValue(path.replace(/\[(\d+)\]/g, ".$1"), hinovaUserData);
+        return value || '';
+      });
     } else {
       result = schedule.body.replace(/{(.*?)}/g, (_, key) => {
-        // Mapeia campos personalizados
         const fieldMap = {
           "veiculo_placa": "veiculos[0].placa",
           "veiculo_chassi": "veiculos[0].chassi",
           "veiculo_fipe": "veiculos[0].valor_fipe",
           "veiculo_descricao_modelo": "veiculos[0].descricao_modelo"
         };
-
-        // Substitui chaves personalizadas ou retorna diretamente do JSON
         const path = fieldMap[key] || key;
         const value = getNestedValue(path.replace(/\[(\d+)\]/g, ".$1"), hinovaUserData);
-        return value !== undefined ? value : `{${key}}`; // Retorna marcador se valor não encontrado
+        return value !== undefined ? value : `{${key}}`;
       });
     }
-
     if (schedule.link) {
       result = result + ' \n\n ' + 'link: ' + schedule.link
     }
-
     let phoneNumber
     if (schedule?.hinovaContactName?.includes("PLATAFORMA") || schedule.hinovaContactName === null) {
       phoneNumber =
@@ -410,8 +430,11 @@ async function handleSendServiceScheduledMessage(job) {
       status: "ENVIADA"
     });
 
+    const queueId = schedule.fila
+    const userId = schedule.atendente
+
     logger.info(`Criado o Ticket`);
-    const createdTicket = await FindOrCreateTicketService(contact, whatsapp.id!, 0, schedule.companyId, null, 1);
+    const createdTicket = await FindOrCreateTicketService(contact, whatsapp.id!, 0, schedule.companyId, null, 1, queueId, userId);
 
     if (!schedule.mediaPath) {
       const messageData = {
@@ -428,8 +451,6 @@ async function handleSendServiceScheduledMessage(job) {
       await CreateMessageService({ messageData, companyId: schedule.companyId });
     }
 
-
-    logger.info(`Mensagem agendada enviada para: ${schedule.contact?.name}`);
     sendScheduledMessages.clean(15000, "completed");
   } catch (e: any) {
     Sentry.captureException(e);
@@ -442,7 +463,6 @@ async function handleSendServiceScheduledMessage(job) {
 }
 
 async function createNewTicketFromServices(phoneNumber, companyId) {
-  logger.info("CREATE NEW TICKET 771")
   const whatsapp = await GetDefaultWhatsApp(companyId);
 
   const profilePicUrl = await GetProfilePicUrl(

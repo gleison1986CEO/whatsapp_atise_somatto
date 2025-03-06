@@ -21,6 +21,8 @@ const FindOrCreateTicketService = async (
   companyId: number,
   groupContact?: Contact,
   status: number = 0,
+  queueId?: number,
+  userId?: number
 ): Promise<Ticket> => {
   let ticket = await Ticket.findOne({
     where: {
@@ -41,7 +43,7 @@ const FindOrCreateTicketService = async (
     logger.info("UPDATED CLOSED 1111")
 
     if (status == 1) {
-      await ticket.update({ queueId: null, userId: null, status: "open" });
+      await ticket.update({ queueId: queueId, userId: userId, status: "open" });
     } else {
       await ticket.update({ queueId: null, userId: null });
     }
