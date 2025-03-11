@@ -6,6 +6,7 @@ import * as TicketController from "../controllers/TicketController";
 const ticketRoutes = express.Router();
 
 ticketRoutes.get("/tickets", isAuth, TicketController.index);
+ticketRoutes.post("/tickets_per_user", isAuth, TicketController.ticketPerUser);
 
 ticketRoutes.get("/tickets/kanban", isAuth, TicketController.kanban);
 

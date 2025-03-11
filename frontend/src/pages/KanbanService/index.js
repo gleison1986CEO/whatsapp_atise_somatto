@@ -7,7 +7,7 @@ import { toast } from "react-toastify";
 import { i18n } from "../../translate/i18n";
 import { useHistory } from 'react-router-dom';
 import { socketConnection } from "../../services/socket";
-import { Button } from "@material-ui/core";
+import { Button, Tooltip } from "@material-ui/core";
 import MainContainer from "../../components/MainContainer";
 import MainHeader from "../../components/MainHeader";
 import MainHeaderButtonsWrapper from "../../components/MainHeaderButtonsWrapper";
@@ -173,9 +173,16 @@ const KanbanService = () => {
                 LINK: {ticket.link}
               </p>
 
-              <center><button className={classes.button} style={{ width: "100%", maxWidth: "300px", margin: "0 auto" }} onClick={() => handleCardClickSend(ticket.id)}>ENVIAR</button></center>
-              <center><button className={classes.button2} style={{ marginRight: '10px', width: "100%", maxWidth: "300px", margin: "0 auto", marginTop: "10px" }} onClick={() => handleCardEditClick(ticket.id)}>ATUALIZAR</button></center>
-              <center><button className={classes.button3} style={{ marginRight: '10px', width: "100%", maxWidth: "300px", margin: "0 auto", marginTop: "10px" }} onClick={() => handleCardClick(ticket.id)}>DELETAR</button></center>
+              <center>
+                <button
+                  className={classes.button}
+                  style={{ width: "100%", maxWidth: "300px", margin: "0 auto" }}
+                  onClick={() => handleCardClickSend(ticket.id)}
+                  title="Enviar para a lista de serviços">
+                  ENVIAR</button>
+              </center>
+              <center><button title="Editar o serviço" className={classes.button2} style={{ marginRight: '10px', width: "100%", maxWidth: "300px", margin: "0 auto", marginTop: "10px" }} onClick={() => handleCardEditClick(ticket.id)}>ATUALIZAR</button></center>
+              <center><button title="Excluir o serviço" className={classes.button3} style={{ marginRight: '10px', width: "100%", maxWidth: "300px", margin: "0 auto", marginTop: "10px" }} onClick={() => handleCardClick(ticket.id)}>DELETAR</button></center>
             </div>
           )
         })),
@@ -289,38 +296,45 @@ const KanbanService = () => {
       <MainContainer className={classes.mainContainer}>
         <MainHeader>
           <MainHeaderButtonsWrapper>
-            <Button
-              style={{ marginRight: "7px" }}
-              variant="contained"
-              color="primary"
-              onClick={handleOpenScheduleModal}
-            >
-              NOVO SERVIÇO
-            </Button>
-            <Button
-              style={{ marginRight: "7px" }}
-              variant="contained"
-              color="primary"
-              onClick={handleOpenAllServicesModal}
-            >
-              CAMPOS DISPONÍVEIS
-            </Button>
-            <Button
-              style={{ marginRight: "7px" }}
-              variant="contained"
-              color="primary"
-              onClick={handleOpenScheduleNameModal}
-            >
-              NOVA COLUNA
-            </Button>
-
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={() => history.push("/service_schedules_manager")}
-            >
-              GERENCIAR SERVIÇOS AGENDADOS
-            </Button>
+            <Tooltip title="Criação de novo Serviço">
+              <Button
+                style={{ marginRight: "7px" }}
+                variant="contained"
+                color="primary"
+                onClick={handleOpenScheduleModal}
+              >
+                NOVO SERVIÇO
+              </Button>
+            </Tooltip>
+            <Tooltip title="Campos disponíveis para inclusão nos serviços">
+              <Button
+                style={{ marginRight: "7px" }}
+                variant="contained"
+                color="primary"
+                onClick={handleOpenAllServicesModal}
+              >
+                CAMPOS DISPONÍVEIS
+              </Button>
+            </Tooltip>
+            <Tooltip title="Criação de nova coluna que será exibida no Kanban">
+              <Button
+                style={{ marginRight: "7px" }}
+                variant="contained"
+                color="primary"
+                onClick={handleOpenScheduleNameModal}
+              >
+                NOVA COLUNA
+              </Button>
+            </Tooltip>
+            <Tooltip title="Lista com todos os serviços enviados no Kanban">
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => history.push("/service_schedules_manager")}
+              >
+                GERENCIAR SERVIÇOS AGENDADOS
+              </Button>
+            </Tooltip>
           </MainHeaderButtonsWrapper>
         </MainHeader>
         <KambamServiceModal

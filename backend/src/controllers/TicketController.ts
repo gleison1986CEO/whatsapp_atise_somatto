@@ -9,6 +9,7 @@ import ShowTicketUUIDService from "../services/TicketServices/ShowTicketFromUUID
 import ShowTicketService from "../services/TicketServices/ShowTicketService";
 import UpdateTicketService from "../services/TicketServices/UpdateTicketService";
 import ListTicketsServiceKanban from "../services/TicketServices/ListTicketsServiceKanban";
+import ListTicketByUser from "../services/TicketServices/ListTicketByUser";
 
 type IndexQuery = {
   searchParam: string;
@@ -82,6 +83,15 @@ export const index = async (req: Request, res: Response): Promise<Response> => {
   return res.status(200).json({ tickets, count, hasMore });
 };
 
+export const ticketPerUser = async (req: Request, res: Response): Promise<Response> => {
+  const { userId } = req.body;
+
+  const { tickets, count, hasMore } = await ListTicketByUser({
+    userId
+  });
+  return res.status(200).json({ tickets, count, hasMore });
+};
+
 export const kanban = async (req: Request, res: Response): Promise<Response> => {
   const {
     pageNumber,
@@ -135,7 +145,7 @@ export const kanban = async (req: Request, res: Response): Promise<Response> => 
   });
 
   //console.log("ticket controller 82");
-  
+
   return res.status(200).json({ tickets, count, hasMore });
 };
 

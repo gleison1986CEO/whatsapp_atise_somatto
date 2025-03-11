@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext, useRef } from "react";
 
 import * as Yup from "yup";
 import { Formik, Form, Field } from "formik";
-import { InputLabel } from "@material-ui/core";
+import { InputLabel, Tooltip } from "@material-ui/core";
 import { toast } from "react-toastify";
 import { useHistory } from "react-router-dom";
 
@@ -433,19 +433,20 @@ const ScheduleModal = ({ open, onClose, scheduleId, contactId, cleanContact, rel
 												))
 											}
 										/>
-
-										<Button
-											style={{ marginTop: 15, display: enableCsv ? "" : "none" }}
-											color="primary"
-											onClick={() => {
-												setEnableContact(!enableContact)
-												attachmentFileCsv.current.click()
-											}}
-											disabled={isSubmitting}
-											variant="outlined"
-										>
-											CONTATOS CSV
-										</Button>
+										<Tooltip title="Adicionar contatos a partir de CSV" placement="bottom">
+											<Button
+												style={{ marginTop: 15, display: enableCsv ? "" : "none" }}
+												color="primary"
+												onClick={() => {
+													setEnableContact(!enableContact)
+													attachmentFileCsv.current.click()
+												}}
+												disabled={isSubmitting}
+												variant="outlined"
+											>
+												CONTATOS CSV
+											</Button>
+										</Tooltip>
 										<Autocomplete
 											fullWidth
 											style={{ display: "none" }}
@@ -615,36 +616,40 @@ const ScheduleModal = ({ open, onClose, scheduleId, contactId, cleanContact, rel
 								</div>
 								<br />
 								<div className={classes.multFieldLine}>
-									<Field
-										as={TextField}
-										type="number"
-										label="Envios por dia"
-										name="perDay"
-										defaultValue={0}
-										onChange={(e) => {
-											setSchedule({ ...schedule, perDay: e.target.value });
-										}}
-										InputLabelProps={{
-											shrink: true,
-										}}
-										variant="outlined"
-										fullWidth
-									/>
-									<Field
-										as={TextField}
-										type="number"
-										label="Intervalo de dias"
-										name="intervalo"
-										defaultValue={0}
-										onChange={(e) => {
-											setSchedule({ ...schedule, betweenDays: e.target.value });
-										}}
-										InputLabelProps={{
-											shrink: true,
-										}}
-										variant="outlined"
-										fullWidth
-									/>
+									<Tooltip title="Quantidade de envios em um dia" placement="bottom">
+										<Field
+											as={TextField}
+											type="number"
+											label="Envios por dia"
+											name="perDay"
+											defaultValue={0}
+											onChange={(e) => {
+												setSchedule({ ...schedule, perDay: e.target.value });
+											}}
+											InputLabelProps={{
+												shrink: true,
+											}}
+											variant="outlined"
+											fullWidth
+										/>
+									</Tooltip>
+									<Tooltip title="Intervalo entre dias que serão enviadas as mensagens" placement="bottom">
+										<Field
+											as={TextField}
+											type="number"
+											label="Intervalo de dias"
+											name="intervalo"
+											defaultValue={0}
+											onChange={(e) => {
+												setSchedule({ ...schedule, betweenDays: e.target.value });
+											}}
+											InputLabelProps={{
+												shrink: true,
+											}}
+											variant="outlined"
+											fullWidth
+										/>
+									</Tooltip>
 								</div>
 								<br />
 								<div>

@@ -35,6 +35,7 @@ import Chat from "../pages/Chat";
 import Subscription from "../pages/Subscription/";
 import kanban from "../pages/Kanban";
 import KanbanService from "../pages/KanbanService";
+import HistoricUser from "../pages/HistoricUser";
 
 
 const Routes = () => {
@@ -99,6 +100,7 @@ const Routes = () => {
                 <Route exact path="/helps" component={Helps} isPrivate />
                 <Route exact path="/kanban" component={kanban} isPrivate />
                 <Route exact path="/kanban_services" component={KanbanService} isPrivate />
+                <Route exact path="/historico_atendimentos" component={HistoricUser} isPrivate />
                 <Route exact path="/users" component={Users} isPrivate />
                 <Route
                   exact

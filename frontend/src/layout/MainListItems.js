@@ -285,6 +285,11 @@ const MainListItems = (props, { collapsed }) => {
         primary={i18n.t("Kanban de Serviços")}
         icon={<EventAvailable />}
       />
+      <ListItemLink
+        to="/historico_atendimentos"
+        primary="Histórico de Atendimentos"
+        icon={<EventAvailable />}
+      />
       {/* <ListItemLink
         to="/service_schedules"
         primary={i18n.t("mainDrawer.listItems.service_schedules")}
