@@ -47,6 +47,12 @@
 - npm i @whiskeysockets/baileys@6.0.0
 ---
 
+## MAKE REVISION ON[BAYLES AND WHASTAPP CONNECTIONS]
+- BAYLES ERROS
+- MESSAGE VEY SLOW
+
+---
+
 1- Primeiro acessar a pasta da libs com usuario deploy
 
 /home/deploy/empresa/backend/src/libs
