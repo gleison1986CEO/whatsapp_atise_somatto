@@ -43,3 +43,16 @@
 ## PM2
 - PM2 RESTART ALL
 ---
+
+
+1- Primeiro acessar a pasta da libs com usuario deploy
+
+/home/deploy/empresa/backend/src/libs
+
+
+2-Segundo editar o arquivo wbots
+
+
+no version voce vai acrencentar  [2,2431,1],
+
+3- rodar o npm run build e depois pm2 restart all.
