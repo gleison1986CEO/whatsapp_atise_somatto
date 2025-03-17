@@ -43,7 +43,9 @@
 ## PM2
 - PM2 RESTART ALL
 ---
-
+## WHISKEYSBAYLY FIX WHASTAPP NOT CONNECTION
+- npm i @whiskeysockets/baileys@6.0.0
+---
 
 1- Primeiro acessar a pasta da libs com usuario deploy
 
