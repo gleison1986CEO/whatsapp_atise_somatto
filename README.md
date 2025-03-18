@@ -10,6 +10,12 @@
 - git clone https://github.com/gleison1986CEO/install_sh.git
 ---
 
+## PROMO PAGES
+- formulario
+- somatto_promo_cadastro
+- atise_promo_cadastro
+---
+
 ## COMANDO DE UPDATE
 - git clone https://github.com/gleison1986CEO/whatsapp_atise_somatto.git 
 - rm -R backend && rm -R frontend
